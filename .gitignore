@@ -1,3 +1,7 @@
+# Added to gitignore by Ewoud
+arduino-libraries/
+
+
 # Built application files
 *.apk
 *.aar
