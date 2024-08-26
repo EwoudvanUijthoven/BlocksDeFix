@@ -166,44 +166,10 @@ if ($pageRefreshed) {
                     <td class="btnsTd" style="width: 20%;"><input id="fileName_php"></input>
                     </td>
                     <td class="btnsTd" style="width: 20%;"><input class="btn" id="saving_php" type="button" value="Speichern Code" onclick="savePHP();" /></td>
-
-                    <td align="right" class="btnsTd" style="width: 28%;">
-                        <button class="btn" id="drawBaall" onclick="drawBaall()">MeinSmartHome</button>
-                    </td>
-                    <td align="right" class="btnsTd" style="width: 39%;">
-                        <button class="btn" id="showBaall" onclick="showBaall()">BAALL anzeigen</button>
-                    </td>
                 </tr>
             </table>
         </div>
         <!----------->
-        <!--BAALL frontend-->
-        <div class="codeStyleRight" id="show-baall" style="margin-bottom: 0px;">
-            <h4>BAALL</h4><br>
-            <div id="baall-wrapper">
-                <div id="baall">
-                    <?php
-                    require_once("baall.php");
-                    ?>
-                </div>
-                <!--end div baall-->
-            </div>
-            <!--end div baall-wrapper-->
-
-            <!--Design BAALL frontend-->
-            <div id="designBaall-wrapper" style="display:none;">
-                <div id="designBaall">
-                    <?php
-                    require_once("design-baall.php");
-                    ?>
-                </div>
-                <!--end div designBaall-->
-            </div>
-            <!--end div designBaall-wroppaer-->
-        </div>
-        <!--end div show baall-->
-    </div>
-    <!--end div rightDiv-->
 </div>
 <!--end div main-->
 <!----------->
