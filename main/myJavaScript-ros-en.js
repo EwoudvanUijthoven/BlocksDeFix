@@ -343,24 +343,7 @@ $('#generate').click(function() {
     document.getElementById("rosCode").style.visibility = "visible";
 });
 //--------------------------------
-//this is to call baall.php when they click on the button
-$(document).ready(function() {
-    $("#showBaall").click(function() {
-        $('#baall-wrapper').show();
-        $('#designBaall-wrapper').hide();
-        $("#baall").load('baall.php');
-    });
-});
 
-//this is to call design-baall.php when they click on the button
-$(document).ready(function() {
-    $("#drawBaall").click(function() {
-        $('#baall-wrapper').hide();
-        $('#designBaall-wrapper').show();
-        $("#designBaall").load('design-baall.php');
-    });
-});
-//--------------------------------
 //making integer
 function toInt(n){ return parseInt(Number(n)); };
 

@@ -176,33 +176,6 @@ if ($pageRefreshed) {
             </table>
         </div>
         <!----------->
-        <!--BAALL frontend-->
-        <div class="codeStyleRight" id="show-baall" style="margin-bottom: 0px;">
-            <h4>BAALL</h4><br>
-            <div id="baall-wrapper">
-                <div id="baall">
-                    <?php
-                    require_once("baall.php");
-                    ?>
-                </div>
-                <!--end div baall-->
-            </div>
-            <!--end div baall-wrapper-->
-
-            <!--Design BAALL frontend-->
-            <div id="designBaall-wrapper" style="display:none;">
-                <div id="designBaall">
-                    <?php
-                    require_once("design-baall.php");
-                    ?>
-                </div>
-                <!--end div designBaall-->
-            </div>
-            <!--end div designBaall-wroppaer-->
-        </div>
-        <!--end div show baall-->
-    </div>
-    <!--end div rightDiv-->
 </div>
 <!--end div main-->
 <!----------->

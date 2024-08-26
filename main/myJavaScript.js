@@ -332,24 +332,7 @@ $('#generate').click(function() {
     document.getElementById("phpCode").style.visibility = "visible";
 });
 //--------------------------------
-//this is to call baall.php when they click on the button
-$(document).ready(function() {
-    $("#showBaall").click(function() {
-        $('#baall-wrapper').show();
-        $('#designBaall-wrapper').hide();
-        $("#baall").load('baall.php');
-    });
-});
 
-//this is to call design-baall.php when they click on the button
-$(document).ready(function() {
-    $("#drawBaall").click(function() {
-        $('#baall-wrapper').hide();
-        $('#designBaall-wrapper').show();
-        $("#designBaall").load('design-baall.php');
-    });
-});
-//--------------------------------
 //this is to refresh the baall
 function refreshBaall() {
     var url = 'index.php';
@@ -590,7 +573,7 @@ function secondTime() {
     }
 }
 //--------------------------------
-//this function is to post and call the evel-baall.php & show the output
+//this function is to post and call the eval-baall.php & show the output
 function remoteEval(code) {
     var work_area = "SM";
     var xhr = new XMLHttpRequest();
