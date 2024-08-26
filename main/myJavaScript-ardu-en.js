@@ -632,6 +632,8 @@ function uploadCode(code, callback) {
                     var str_status = "Status:" + obj.status;
                     var str_output = obj.output;
                     var str_error = obj.error;
+                    // var str_hint = "insert hint retrieval"
+                    // output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + str_hint;
                     output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
                     var sMonitor = "\nSerial Monitor Output:\n";
                     output.innerHTML = output.innerHTML + sMonitor.bold();
@@ -643,6 +645,8 @@ function uploadCode(code, callback) {
                     var str_status = "Status:" + obj.status;
                     var str_output = obj.output;
                     var str_error = obj.error;
+                    // var str_hint = "insert hint retrieval"
+                    // output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + str_hint;
                     output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
                 }
                 break;

@@ -177,7 +177,7 @@ if ($pageRefreshed) {
         <!----------->
         <!--BAALL frontend-->
         <div class="codeStyleRight" id="show-baall" style="margin-bottom: 0px;">
-            <h4>BAALL</h4><br>
+            <h4>Remove this!!</h4><br>
             <div id="baall-wrapper">
                 <div id="baall">
                     <?php

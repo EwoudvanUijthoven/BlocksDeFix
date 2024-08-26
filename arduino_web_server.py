@@ -16,13 +16,15 @@ import sys
 import glob
 import json
 import serial
-import syslog
+# import syslog
+import itertools
 import time
 import threading
 import urllib3
 ###################################################
 logging.basicConfig(level=logging.DEBUG)
-arduino_cmd = '~/arduino-1.8.5/arduino'
+# arduino_cmd = '"C:/Program Files/Arduino IDE/Arduino IDE"'
+arduino_cmd = '"C:/Program Files (x86)/Arduino/arduino"'
 ###################################################
 ###################################################
 #shoutdown the server
@@ -69,8 +71,8 @@ def get_arduino_command():
             arduino_cmd_guesses = [
                 "c:\Program Files\Arduino\Arduino_debug.exe",
                 "c:\Program Files\Arduino\Arduino.exe",
-                "c:\Program Files (x86)\Arduino\Arduino_debug.exe",
-                "c:\Program Files (x86)\Arduino\Arduino.exe"
+                '"c:\Program Files (x86)\Arduino\Arduino_debug.exe"',
+                '"c:\Program Files (x86)\Arduino\Arduino.exe"'
             ]
         else:
             arduino_cmd_guesses = []
@@ -306,9 +308,10 @@ class ArduHandler(object): #SimpleHTTPServer.SimpleHTTPRequestHandler
     #just to check the websocket connection
     @cherrypy.expose
     def ws(self):
-
+        pass
     @cherrypy.expose
     def socket(self, msg):
+        pass
     #####################
     @cherrypy.expose
     def index(self):
