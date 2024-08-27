@@ -57,7 +57,7 @@ if not portList:
     print("List is empty-main! Please connect micro-controller!")
     os.system("pkill -f arduino_web_server.py")
 for i in portList:
-    print "Port Name:"+i
+    print("Port Name:"+i)
     port = i
 arduData = None
 ###################################################
@@ -90,7 +90,12 @@ def get_arduino_command():
 def guess_port_name():
     portname = None
     if platform.system() == "Windows":
-        import _winreg as winreg
+        # If python version is 2.7 (or any other 2.x version)
+        if sys.version_info.major == 2:
+            import _winreg as winreg
+        # If python version is 3.10 (or any other 3.x version)
+        elif sys.version_info.major == 3:
+            import winreg
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "HARDWARE\\DEVICEMAP\\SERIALCOMM")
         for i in itertools.count():
             try:
@@ -105,7 +110,7 @@ def guess_port_name():
         if ttys:
             portList = serial_ports()
             for i in portList:
-                print "Port Name:"+i
+                print("Port Name:"+i)
                 portname = i
 
     logging.info("Guessing port name as %s", portname)
@@ -127,9 +132,9 @@ def arduCherry():
         if (arduData != None and arduData.is_open):
             try:
                 msgArdu = arduData.readline()
-                print "###"
-                print ("CherryPy recieved: ")
-                print (msgArdu)
+                print("###")
+                print("CherryPy recieved: ")
+                print(msgArdu)
                 ###parser
                 #for set and get with wifi shield
                 '''msg = msgArdu.split()
@@ -200,7 +205,7 @@ def funcGet(str1):
     response = http.request("GET", "http://baall-server-2.informatik.uni-bremen.de/api/item/"+name)
     #response = http.request("GET", "http://baall-server-2.informatik.uni-bremen.de/api/status")
     response_json = json.loads(response.data.decode('utf-8'))
-    print response.response_json.status
+    print(response.response_json.status)
     return response.response_json.status
 ###################################################
 ###################################################
@@ -233,14 +238,14 @@ def closePort():
 ###################################################
 def uploadAndCompile(self, text):
     closePort()
-    print "sketch to upload: " + text
+    print("sketch to upload: " + text.decode('utf-8'))
     options, args = parser.parse_args()
     dirname = tempfile.mkdtemp()
     sketchname = os.path.join(dirname, os.path.basename(dirname)) + ".ino"
     f = open(sketchname, "wb")
-    f.write(text + "\n")
+    f.write(text)
     f.close()
-    print "created sketch at %s" % (sketchname,)
+    print("created sketch at %s" % (sketchname,))
     compile_args = [
         options.cmd or get_arduino_command(),
         "--upload",
@@ -253,8 +258,8 @@ def uploadAndCompile(self, text):
             options.board
         ])
     compile_args.append(sketchname)
-    print "Uploading with %s" % (" ".join(compile_args))
-    print "***"
+    print("Uploading with %s" % (" ".join(compile_args)))
+    print("***")
     # Arduino output will be shown in the BEESM output
     rc = subprocess.Popen(" ".join(compile_args), stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
     #####################
@@ -262,8 +267,8 @@ def uploadAndCompile(self, text):
     sendWebSocketMsg(json.dumps({"type":"compiling", "value": "Compiling..."}))
     while True:
         line = rc.stdout.readline()
-        sendWebSocketMsg(json.dumps({"type":"outputCon", "value": line}))
-        if (line.startswith("Global variables use")):
+        sendWebSocketMsg(json.dumps({"type":"outputCon", "value": line.decode('utf-8')}))
+        if (line.decode('utf-8').startswith("Global variables use")):
             sendWebSocketMsg(json.dumps({"type":"uploading", "value": "Uploading..."}))
         if not line:
             break
@@ -271,12 +276,12 @@ def uploadAndCompile(self, text):
     (output, err) = rc.communicate()
 
     rc_status = rc.wait()
-    print "Command output : ", output
-    print "Error output : ", err
-    print "Command exit status/return code: ", rc_status
-    print "***"
-    print "***"
-    msg = json.dumps({"output":output, "error":err,"status":rc_status})
+    print("Command output : ", output)
+    print("Error output : ", err)
+    print("Command exit status/return code: ", rc_status)
+    print("***")
+    print("***")
+    msg = json.dumps({"output":output.decode('utf-8'), "error":err.decode('utf-8'),"status":rc_status})
     openPort()
     return msg
 ###################################################
@@ -331,7 +336,7 @@ if __name__ == '__main__':
     if not portList:
         print("List is empty-cherry! Please connect micro-controller!")
         os.system("pkill -f arduino_web_server.py")
-    print "Blockly-Arduino can now be accessed at http://127.0.0.1:8090/"
+    print("Blockly-Arduino can now be accessed at http://127.0.0.1:8090/")
     thread = threading.Thread(target=arduCherry)
     thread.daemon = True
     thread.start()
