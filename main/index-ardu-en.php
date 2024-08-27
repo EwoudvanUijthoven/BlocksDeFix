@@ -18,7 +18,7 @@
     <script src="codemirror/mode/clike/clike.js"></script>
 
     <meta charset="utf-8">
-    <title>Blockly: Generating Arduino Code For BAALL</title>
+    <title>Blockly: Generating Arduino Code</title>
     <script src="../blockly_compressed.js"></script>
     <script src="../blocks_compressed.js"></script>
     <script src="../php_compressed.js"></script>
@@ -68,11 +68,7 @@
 </div>
 
 <?php
-//if page referesh, designBaall should be refereshed too
 $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
-if ($pageRefreshed) {
-    require_once("clean-design-baall.php");
-}
 ?>
 <div id="main">
     <div id="header">
@@ -81,7 +77,6 @@ if ($pageRefreshed) {
                 <img src="../media/beesm.png" alt="Smiley face" height="42" width="100">
             </h1>
             <button class="btn_lan" id="english" onclick="#" style="float:right;">en</button>
-            <button class="btn_lan" id="german" onclick="location.href='index-ardu-de.php';" style="float:right;">de</button>
         </div>
         <div id="rightHeader">
             <button class="btn_task" id="Task03" onclick="" style="float:left; display: none; visibility:hidden;">Task 3</button>
@@ -91,7 +86,6 @@ if ($pageRefreshed) {
             <!----------->
             <button class="btn_tabs" id="tb3" onclick="location.href='index-ros-en.php';" style="float:right;">TurtleBot 3</button>
             <button class="btn_tabs" id="ardu" onclick="#" style="float:right;" disabled>Arduino</button>
-            <button class="btn_tabs" id="bal" onclick="location.href='index.php';" style="float:right;">BAALL</button>
         </div>
     </div>
     <!----------->
@@ -707,107 +701,6 @@ if ($pageRefreshed) {
     </category>
     <category name="Grove Motor" colour="#64B5F6">
         <block type="grove_motor_shield"></block>
-    </category>
-    <sep></sep>
-    <category name="BAALL" colour="#BF360C">
-        <category name="Connection" colour="#D84315">
-            <block type="connect_baall"></block>
-            <block type="get_status_item">
-                <value name="name">
-                    <block type="text">
-                        <field name="TEXT">name</field>
-                    </block>
-                </value>
-            </block>
-            <block type="get_face_emotion"></block>
-        </category>
-        <category name="Status" colour="#E64A19">
-            <block type="set_value">
-                <value name="name">
-                    <block type="text">
-                        <field name="TEXT">name</field>
-                    </block>
-                </value>
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                        <field name="NUM">1000</field>
-                    </block>
-                </value>
-            </block>
-            <block type="set_value_rgb">
-                <value name="name">
-                    <block type="text">
-                        <field name="TEXT">name</field>
-                    </block>
-                </value>
-                <value name="red">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="green">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="blue">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                        <field name="NUM">1000</field>
-                    </block>
-                </value>
-            </block>
-            <block type="set_value_dimmer">
-                <value name="name">
-                    <block type="text">
-                        <field name="TEXT">name</field>
-                    </block>
-                </value>
-                <value name="status">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                        <field name="NUM">1000</field>
-                    </block>
-                </value>
-            </block>
-            <block type="set_status_items">
-                <value name="name">
-                    <block type="text">
-                        <field name="TEXT">name</field>
-                    </block>
-                </value>
-                <value name="status">
-                    <block type="text">
-                        <field name="TEXT">status</field>
-                    </block>
-                </value>
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                        <field name="NUM">1000</field>
-                    </block>
-                </value>
-            </block>
-            <block type="tv_program">
-                <value name="volume">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                        <field name="NUM">1000</field>
-                    </block>
-                </value>
-            </block>
-        </category>
     </category>
     <sep></sep>
     <category name="TurtleBot3" colour="#DD2C00">
