@@ -90,7 +90,12 @@ def get_arduino_command():
 def guess_port_name():
     portname = None
     if platform.system() == "Windows":
-        import winreg
+        # If python version is 2.7 (or any other 2.x version)
+        if sys.version_info.major == 2:
+            import _winreg as winreg
+        # If python version is 3.10 (or any other 3.x version)
+        elif sys.version_info.major == 3:
+            import winreg
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "HARDWARE\\DEVICEMAP\\SERIALCOMM")
         for i in itertools.count():
             try:
