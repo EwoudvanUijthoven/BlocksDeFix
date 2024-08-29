@@ -17,9 +17,6 @@ let Variables_color = "#AFB42B";
 let Functions_color = "#01579B";
 let FreeNavigation_color = "#FF7043";
 let MapNavigation_color = "#FF8A65";
-let Connection_color = "#039BE5";
-let Status_color = "#03A9F4";
-let Design_color = "#29B6F6";
 let Arduino_color = "#00838F";
 
 reColor(Blockly.Blocks['controls_if'], Logic_color);
@@ -124,22 +121,6 @@ reColor(Blockly.Blocks['movebot_location'], MapNavigation_color);
 reColor(Blockly.Blocks['movebot_position'], MapNavigation_color);
 reColor(Blockly.Blocks['sleep_robot'], MapNavigation_color);
 reColor(Blockly.Blocks['stopbot_map'], MapNavigation_color);
-
-reColor(Blockly.Blocks['connect_baall'], Connection_color);
-reColor(Blockly.Blocks['get_status_item'], Connection_color);
-reColor(Blockly.Blocks['get_name_simple'], Connection_color);
-reColor(Blockly.Blocks['get_status_simple'], Connection_color);
-reColor(Blockly.Blocks['get_emotion'], Connection_color);
-reColor(Blockly.Blocks['get_emotion_data'], Connection_color);
-
-reColor(Blockly.Blocks['set_value'], Status_color);
-reColor(Blockly.Blocks['set_value_rgb'], Status_color);
-reColor(Blockly.Blocks['set_value_dimmer'], Status_color);
-reColor(Blockly.Blocks['set_status_items'], Status_color);
-reColor(Blockly.Blocks['tv_program'], Status_color);
-
-reColor(Blockly.Blocks['baall_frontend'], Design_color);
-reColor(Blockly.Blocks['baall_frontend_adv'], Design_color);
 
 reColor(Blockly.Blocks['raspy_arduino_write'], Arduino_color);
 reColor(Blockly.Blocks['raspy_arduino_read'], Arduino_color);
@@ -446,85 +427,7 @@ function cellWhite(x,y,z) {
     myTable.rows[x].cells[y].style.transform = null;
 }
 //--------------------------------
-//this is to refresh the baall
-function refreshBaall() {
-    var url = 'index-ros-en.php';
-    $('#baall-wrapper').load(url + ' #baall',function(){
-        if(x_loc !== null){
-            cellColor(y_loc, x_loc, z_loc);
-        }
-    });
-    $('#designBaall-wrapper').load(url + ' #designBaall');
-}
 
-WebSocketBaall();
-
-function WebSocketBaall() {
-    var objects = ["bedroomJack1", "bedroomJack2", "bedroomLight1", "bedroomLight2", "livingJack1", "livingLight1",
-        "livingLight2", "corridorLight", "kitchenLight", "bathroomLight", "bulblamp", "floorlamp", "bathroomLight",
-        "bathroomdoor", "upperLeftDoor", "upperRightDoor", "lowerLeftDoor", "lowerRightDoor", "livingLight3",
-        "tvProgram", "bathroomToiletHeight", "basin"];
-
-    if ("WebSocket" in window) {
-        //open a web socket
-        var ws = new WebSocket("ws://baall-server-2.informatik.uni-bremen.de/panelws");
-
-        ws.onopen = function() {
-            //Web Socket is connected, send data using send()
-            ws.send("Message to send");
-        };
-        ws.onmessage = function(evt) {
-            var received_msg = evt.data;
-            consoleLog("Message is received...");
-            var n = received_msg.indexOf('}');
-            var m = received_msg.indexOf('}}');
-            if (m != -1 && n != -1) {
-                var str = received_msg.substring(0, received_msg.indexOf('}}') + 2);
-            } else if (n != -1 && m == -1) {
-                var str = received_msg.substring(0, received_msg.indexOf('}') + 1);
-            }
-            var obj = JSON.parse(str);
-            if (obj.type === "update") {
-                for (i = 0; i < objects.length; i++) {
-                    if (obj.id === objects[i]) {
-                        //consoleLog("status of one object in the list changed!");
-                        //refreshBaall();
-                    }
-                }
-            }
-        };
-
-        ws.onclose = function() {
-            //websocket is closed
-            consoleLog("Connection is closed...");
-	        setTimeout(function(){WebSocketBaall()}, 7000);
-        };
-        window.onbeforeunload = function(event) {
-            ws.close();
-        };
-    } else {
-        //The browser doesn't support WebSocket
-        consoleLog("WebSocket NOT supported by your Browser!");
-    }
-}
-//--------------------------------
-function showBaall() {
-    //this is to refresh the div=baall when user press show baall btn
-    setTimeout(
-        function() {
-            var url = 'index-ros-en.php';
-            $('#baall-wrapper').load(url + ' #baall');
-        }, 100);
-}
-
-function drawBaall() {
-    //this is to refresh the div=baall when user press show design baall btn
-    setTimeout(
-        function() {
-            var url = 'index-ros-en.php';
-            $('#designBaall-wrapper').load(url + ' #designBaall');
-        }, 100);
-}
 //--------------------------------
 var workspace = Blockly.inject('blocklyDiv',
     {media: '../media/',
