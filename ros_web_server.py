@@ -509,7 +509,7 @@ class block_ros_code(object):
 
         pose_pub.publish(newpose)
         rate.sleep()
-        print "angle_turned: %s" %newpose.pose.pose.orientation.z
+        print("angle_turned: %s" %newpose.pose.pose.orientation.z)
         return "Initialisation of Pose Data Sent!"
 ###################################################
 #send PoseStamped --> move_base data -->based on a SLAM map
@@ -727,8 +727,8 @@ class block_ros_code(object):
             #estimate the distance moved by robot
             distance_moved = sqrt(pow((position.x - x_start), 2) + pow((position.y - y_start), 2))
 
-            print "distance: %s" %distance
-            print "moved: %s" %distance_moved
+            print("distance: %s" %distance)
+            print("moved: %s" %distance_moved)
             if (distance_moved >= distance-0.10):
                 if(direction == 1):
                     twist.linear.x = 0.10
@@ -736,7 +736,7 @@ class block_ros_code(object):
                     twist.linear.x = -0.10
 
             if (distance_moved > distance):
-                print "Breaking!!!"
+                print("Breaking!!!")
                 break
 
             velocity_pub.publish(twist)
@@ -845,17 +845,17 @@ class block_ros_code(object):
             turn = abs(turn_angle + angular_tolerance)
             goal = abs(goal_angle)
 
-            print "goal_angle: %s" %goal_angle
-            print "rotate: %s" %rotation
+            print("goal_angle: %s" %goal_angle)
+            print("rotate: %s" %rotation)
             if (abs(turn_angle + angular_tolerance) > abs(goal_angle)-0.25):
                 if(clockwise == 0):
                     twist.angular.z = 0.20
                 else:
                     twist.angular.z = -0.20
-            print "turn: %s" %turn
-            print "goal_angle: %s" %goal
+            print("turn: %s" %turn)
+            print("goal_angle: %s" %goal)
             if (abs(turn_angle + angular_tolerance) > abs(goal_angle)):
-                print "Breaking!!!"
+                print("Breaking!!!")
                 break
 
             velocity_pub.publish(twist)
@@ -980,8 +980,8 @@ class block_ros_code(object):
             #estimate the distance moved by robot
             distance_moved = sqrt(pow((position.x - x_start), 2) + pow((position.y - y_start), 2))
 
-            print "distance: %s" %distance
-            print "moved: %s" %distance_moved
+            print("distance: %s" %distance)
+            print("moved: %s" %distance_moved)
             if (distance_moved >= distance-0.10):
                 if(direction == 1):
                     twist.linear.x = 0.10
@@ -989,7 +989,7 @@ class block_ros_code(object):
                     twist.linear.x = -0.10
 
             if (distance_moved > distance):
-                print "Breaking!!!"
+                print("Breaking!!!")
                 break
 
             checkAgain = False
@@ -1392,7 +1392,7 @@ class block_ros_code(object):
     @cherrypy.expose
     def sleep_robot(self,x_second=0):
         x_second=np.float64(x_second)
-        print "robot Slpeeping: %s" %x_second
+        print("robot Slpeeping: %s" %x_second)
         rospy.sleep(x_second)
         return 'Sleping Time Set!'
 ###################################################
@@ -1502,7 +1502,7 @@ class block_ros_code(object):
         distance=float(distance)
 
         distance = distance/100
-        print "@@@@@@@@@@@@@@@@ distance %s" %distance
+        print("@@@@@@@@@@@@@@@@ distance %s" %distance)
 
 
         ranges_scanner = list(ranges_scanner_total)
@@ -1538,7 +1538,7 @@ class block_ros_code(object):
                 rospy.loginfo("There is NO block near to you!")
                 ranges_scanner_boolean = 0
 
-        print "@@@@@@@@@@@@@@@@ There is a block?!: %s" %ranges_scanner_boolean
+        print("@@@@@@@@@@@@@@@@ There is a block?!: %s" %ranges_scanner_boolean)
         return str(ranges_scanner_boolean)
 ###################################################
 ##just to check the data
@@ -1600,7 +1600,7 @@ class block_ros_code(object):
         move_base.wait_for_server(rospy.Duration(5.0))
 
         degree2radian = degreeAngle* pi/180
-        print "degree2radian: %s" %degree2radian
+        print("degree2radian: %s" %degree2radian)
 
         while(degree2radian < 0):
                 degree2radian += 2* pi
@@ -1924,7 +1924,7 @@ class block_ros_code(object):
 
         if port == 00:
             port_name = '/dev/ttyACM0'
-        elif port == 01:
+        elif port == 1:
             port_name = '/dev/ttyACM1'
         elif port == 10:
             port_name = '/dev/ttyUSB0'
@@ -1942,7 +1942,7 @@ class block_ros_code(object):
 
         if port == 00:
             port_name = '/dev/ttyACM0'
-        elif port == 01:
+        elif port == 1:
             port_name = '/dev/ttyACM1'
         elif port == 10:
             port_name = '/dev/ttyUSB0'
