@@ -1,3 +1,21 @@
+Blockly.readPythonFile = function(file) {
+    var rawFile = new XMLHttpRequest();
+    var code = "";
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                code = rawFile.responseText;
+            }
+        }
+    }
+    rawFile.send(null);
+    return code;
+};
+
 Blockly.PHP['print_r'] = function(block) {
     var value_print_r = Blockly.PHP.valueToCode(block, 'print_r', Blockly.PHP.ORDER_NONE) || '\'\'';
     var code = 'print_r(' + value_print_r + ');\n';
@@ -81,6 +99,41 @@ Blockly.PHP['movebot_sec'] = function(block) {
     var code = 'movebot_second(' + dropdown_direction + ',' + value_second + ',' + dropdown_speed + ');\n';
     return code;
 };
+
+Blockly.Python['movebot_sec'] = function(block) {
+    var direction = block.getFieldValue('direction');
+    var second = Blockly.PHP.valueToCode(block, 'second', Blockly.PHP.ORDER_ATOMIC) || '0';
+    var speed = block.getFieldValue('speed');
+
+    var code = "";
+    code += '\n'
+    code += '# Starting to move the bot ' + direction + ' with ' + speed + ' speed for ' + second + ' seconds.'
+    code += '\n'
+    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_init.py");
+    if (speed === 0) {
+        code += 'twist.linear.x = 0.00'
+    }
+    if (speed === "'slow'" && direction === "'Forward'") {
+        code += 'twist.linear.x = 0.10'
+    } else if (speed === "'normal'" && direction === "'Forward'") {
+        code += 'twist.linear.x = 0.20'
+    } else if (speed === "'fast'" && direction === "'Forward'") {
+        code += 'twist.linear.x = 0.30'
+    }
+    if (speed === "'slow'" && direction === "'Backward'") {
+        code += 'twist.linear.x = -0.10'
+    } else if (speed === "'normal'" && direction === "'Backward'") {
+        code += 'twist.linear.x = -0.20'
+    } else if (speed === "'fast'" && direction === "'Backward'") {
+        code += 'twist.linear.x = -0.30'
+    }
+    code += '\n'
+    code += 'second = ' + second.toString()
+    code += '\n'
+    code += '\n'
+    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
+    return code;
+}
 
 Blockly.PHP['turnbot_sec'] = function(block) {
     var dropdown_rotation = block.getFieldValue('rotation');
