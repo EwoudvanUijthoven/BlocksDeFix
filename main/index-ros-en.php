@@ -153,7 +153,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
         </div>
         <!----------->
         <div class="codeStyleRight">
-            <h4 id="hideRos">ROS Code</h4><br>
+            <h4 id="hideRos">Python Code</h4><br>
             <div id="rosCode"></div>
         </div>
         <!----------->

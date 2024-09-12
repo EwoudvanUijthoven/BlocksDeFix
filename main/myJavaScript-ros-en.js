@@ -458,10 +458,9 @@ function resetClick() {
 //--------------------------------
 //generating the code
 function generateCode() {
-    //Generate ROS code and display it.
-    //generate the code based on the workspace
-    Blockly.PHP.INFINITE_LOOP_TRAP = null;
-    var code = Blockly.PHP.workspaceToCode(workspace);
+    // Generate Python code and display it.
+    Blockly.Python.INFINITE_LOOP_TRAP = null;
+    var code = Blockly.Python.workspaceToCode(workspace);
 
     //find the load_xml in the code string
     var myString = code;
