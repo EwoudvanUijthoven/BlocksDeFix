@@ -1,5 +1,6 @@
 # Added to gitignore by Ewoud
 arduino-libraries/
+temp_code.py
 
 
 # Built application files
