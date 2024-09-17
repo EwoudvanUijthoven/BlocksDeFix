@@ -591,23 +591,33 @@ function secondTime() {
 //--------------------------------
 //this function is to post and call the evel.php & show the output
 function remoteEval(code) {
-    var work_area = "ROS";
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "eval-ros.php?task="+getTask()+"&area="+work_area, true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var str = (xhr.responseText);
-            var first = str.indexOf('<html>');
-            var last = str.indexOf('</html>');
-            var str_final = str.slice(first, last);
-            str = str.replace(str_final, '');
-            str = str.trim();
-            document.getElementById("output").innerHTML = (str);
-            document.getElementById("loader").style.display="none";
-	        document.getElementById("run").disabled = false;
-        }
-    }
-    xhr.send(code);
+    // var work_area = "ROS";
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("POST", "eval-ros.php?task="+getTask()+"&area="+work_area, true);
+    // xhr.onreadystatechange = function() {
+    //     if (xhr.readyState == 4 && xhr.status == 200) {
+    //         var str = (xhr.responseText);
+    //         var first = str.indexOf('<html>');
+    //         var last = str.indexOf('</html>');
+    //         var str_final = str.slice(first, last);
+    //         str = str.replace(str_final, '');
+    //         str = str.trim();
+    //         document.getElementById("output").innerHTML = (str);
+    //         document.getElementById("loader").style.display="none";
+	//         document.getElementById("run").disabled = false;
+    //     }
+    // }
+    // xhr.send(code);
+    var url = "http://127.0.0.1:8099/run_generated_code";
+    var method = "POST";
+    var async = true;
+    var request = new XMLHttpRequest();
+    request.open(method, url, async);
+    request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+    request.send(code.toString());
+    document.getElementById("output").innerHTML = ("request done!");
+    document.getElementById("loader").style.display="none";
+    document.getElementById("run").disabled = false;
 }
 //--------------------------------
 function remoteSaveXML(code, name) {

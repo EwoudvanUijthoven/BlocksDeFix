@@ -1955,6 +1955,24 @@ class block_ros_code(object):
         datatonum = ser.read(1) #if data is received, read a byte from the serial buffer
         rospy.loginfo(datatonum)
         return datatonum
+
+    @cherrypy.expose
+    def run_generated_code(self):
+        import subprocess
+        # Read the body of the request as raw text
+        body = cherrypy.request.body.read().decode('utf-8')
+        print(body)
+
+        # Save the code to a file and execute it
+        with open('temp_code.py', 'w') as f:
+            f.write(body)
+
+        # Run the Python code using subprocess
+        print("starting to run subprocess")
+        result = subprocess.run(['python3', 'temp_code.py'], capture_output=True, text=True)
+        print("finished running subprocess")
+        print(result)
+        return 'Generated code executed succesfully!'
 ###################################################
 ###################################################
 ###################################################

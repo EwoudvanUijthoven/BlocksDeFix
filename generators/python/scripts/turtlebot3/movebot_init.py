@@ -4,7 +4,7 @@ import time
 
 rospy.init_node('movebot_node', anonymous=True)
 
-velocity_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+# velocity_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
 rate = rospy.Rate(10)
 twist = Twist()
