@@ -132,6 +132,9 @@ Blockly.Python['movebot_sec'] = function(block) {
     code += '\n'
     code += '\n'
     code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
+    code += '\n'
+    // code += 'raise Exception("Something went wrong!")'
+    // code += 'import postal'
     return code;
 }
 

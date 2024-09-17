@@ -1957,22 +1957,20 @@ class block_ros_code(object):
         return datatonum
 
     @cherrypy.expose
+    @cherrypy.tools.json_out()
     def run_generated_code(self):
         import subprocess
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         # Read the body of the request as raw text
         body = cherrypy.request.body.read().decode('utf-8')
-        print(body)
-
         # Save the code to a file and execute it
         with open('temp_code.py', 'w') as f:
             f.write(body)
 
         # Run the Python code using subprocess
-        print("starting to run subprocess")
         result = subprocess.run(['python3', 'temp_code.py'], capture_output=True, text=True)
-        print("finished running subprocess")
-        print(result)
-        return 'Generated code executed succesfully!'
+        msg = {"success": result.returncode == 0, "output": result.stdout, "error": result.stderr, "status": result.returncode}
+        return msg
 ###################################################
 ###################################################
 ###################################################
