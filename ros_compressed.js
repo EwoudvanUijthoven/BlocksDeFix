@@ -277,6 +277,24 @@ Blockly.PHP['stop_bot'] = function(block) {
     var code = 'stop_robot();\n';
     return code;
 };
+
+Blockly.Python['stop_bot'] = function(block) {
+    var code = "";
+    code = ros_python_initialization(code);
+    code += '\n\n"""Starting the operation stop_bot."""\n';
+    code = ros_python_method_initialization(code, '10');
+    code += '\ntwist.linear.x = 0.00\n';
+    code += 'twist.linear.y = 0.00\n';
+    code += 'twist.linear.z = 0.00\n';
+    code += 'twist.angular.x = 0.00\n';
+    code += 'twist.angular.y = 0.00\n';
+    code += 'twist.angular.z = 0.00\n';
+    code += '\nsecond = 2\n\n';
+    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
+    code += '\nrospy.loginfo("*********************ROBOT STOPPED**************************")';
+    return code;
+}
+
 //-----------------------------------------------------------------
 //-------------------Map Navigation--------------------------------
 //-----------------------------------------------------------------
@@ -344,94 +362,6 @@ Blockly.PHP['sleep_robot'] = function(block) {
 Blockly.PHP['stopbot_map'] = function(block) {
     var code = 'stopbot_map();\n';
     return code;
-};
-//-----------------------------------------------------------------
-//----------------------------BAALL--------------------------------
-//-----------------------------------------------------------------
-Blockly.PHP['connect_baall'] = function(block) {
-    var code = '$BAALL = connect_server();\n';
-    return code;
-};
-
-Blockly.PHP['get_status_item'] = function(block) {
-    var value_name= Blockly.PHP.valueToCode(block, 'name', Blockly.PHP.ORDER_ATOMIC) || '\'\'';
-    var code = 'get_status_item('+ value_name + ')';
-    return [code, Blockly.PHP.ORDER_ATOMIC];
-};
-
-Blockly.PHP['get_status_simple'] = function(block) {
-    var code = 'get_status($item)';
-    return [code, Blockly.PHP.ORDER_ATOMIC];
-};
-
-Blockly.PHP['get_name_simple'] = function(block) {
-    var code = 'get_name($item)';
-    return [code, Blockly.PHP.ORDER_ATOMIC];
-};
-
-Blockly.PHP['set_value'] = function(block) {
-    var value_name = Blockly.PHP.valueToCode(block, 'name', Blockly.PHP.ORDER_ATOMIC) || '\'\'';
-    var dropdown_status = block.getFieldValue('status');
-    var code = 'set_status(' + value_name + ',' + dropdown_status + ');\n';
-    return code;
-};
-
-Blockly.PHP['set_value_dimmer'] = function(block) {
-    var value_name = Blockly.PHP.valueToCode(block, 'name', Blockly.PHP.ORDER_ATOMIC);
-    var value_status = Blockly.PHP.valueToCode(block, 'status', Blockly.PHP.ORDER_ATOMIC);
-    var code = 'set_statusDimmer(' + value_name + ',' + value_status + ');\n';
-    return code;
-};
-
-Blockly.PHP['set_value_rgb'] = function(block) {
-    var value_name = Blockly.PHP.valueToCode(block, 'name', Blockly.PHP.ORDER_ATOMIC) || '\'\'';
-    var value_red = Blockly.PHP.valueToCode(block, 'red', Blockly.PHP.ORDER_ATOMIC) || '0';
-    var value_green = Blockly.PHP.valueToCode(block, 'green', Blockly.PHP.ORDER_ATOMIC) || '0';
-    var value_blue = Blockly.PHP.valueToCode(block, 'blue', Blockly.PHP.ORDER_ATOMIC) || '0';
-    var code = 'set_statusRGB(' + value_name + ',' + value_red + ',' + value_green + ',' + value_blue + ');\n';
-    return code;
-};
-
-Blockly.PHP['set_status_items'] = function(block) {
-    var value_name = Blockly.PHP.valueToCode(block, 'name', Blockly.PHP.ORDER_ATOMIC) || '\'\'';
-    var value_status = Blockly.PHP.valueToCode(block, 'status', Blockly.PHP.ORDER_ATOMIC) || '\'\'';
-    var code = 'set_status(' + value_name + ',' + value_status + ');\n';
-    return code;
-};
-
-Blockly.PHP['tv_program'] = function(block) {
-    var dropdown_name = block.getFieldValue('NAME');
-    var value_volume = Blockly.PHP.valueToCode(block, 'volume', Blockly.PHP.ORDER_ATOMIC) || '0';
-    var code = 'set_TVprogram(' + dropdown_name + ',' + value_volume + ');\n';
-    return code;
-};
-
-Blockly.PHP['baall_frontend'] = function(block) {
-    var value_row = Blockly.PHP.valueToCode(block, 'row', Blockly.PHP.ORDER_COMMA) || '0';
-    var value_col = Blockly.PHP.valueToCode(block, 'col', Blockly.PHP.ORDER_COMMA) || '0';
-    var dropdown_item = block.getFieldValue('item');
-    var code = 'draw_home(' + value_row + ',' + value_col + ',' + dropdown_item + ');\n';
-    return code;
-};
-
-Blockly.PHP['baall_frontend_adv'] = function(block) {
-    var value_firstx = Blockly.PHP.valueToCode(block, 'firstX', Blockly.PHP.ORDER_COMMA) || '0';
-    var value_firsty = Blockly.PHP.valueToCode(block, 'firstY', Blockly.PHP.ORDER_COMMA) || '0';
-    var value_lastx = Blockly.PHP.valueToCode(block, 'lastX', Blockly.PHP.ORDER_COMMA) || '0';
-    var value_lasty = Blockly.PHP.valueToCode(block, 'lastY', Blockly.PHP.ORDER_COMMA) || '0';
-    var dropdown_item = block.getFieldValue('item');
-    var code = 'design_home(' + value_firstx + ',' + value_firsty + ',' + value_lastx + ',' + value_lasty + ',' + dropdown_item + ');\n';
-    return code;
-};
-
-Blockly.PHP['get_emotion'] = function(block) {
-    var code = 'get_emotions()';
-    return [code, Blockly.PHP.ORDER_ATOMIC];
-};
-
-Blockly.PHP['get_emotion_data'] = function(block) {
-    var code = 'get_emotions_data()';
-    return [code, Blockly.PHP.ORDER_ATOMIC];
 };
 //-----------------------------------------------------------------
 //---------------------For RaspberryPi-----------------------------
