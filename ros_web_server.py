@@ -35,6 +35,7 @@ import serial
 import sched
 import json
 from actionlib_msgs.msg import *
+from actionlib_msgs.msg import GoalStatus
 ###################################################
 ###################################################
 #rotate the robot based on degree
