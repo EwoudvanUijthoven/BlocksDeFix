@@ -202,6 +202,18 @@ Blockly.PHP['safe_movebot_sec'] = function(block) {
     return code;
 };
 
+Blockly.Python['safe_movebot_sec'] = function(block) {
+    var direction = block.getFieldValue('direction');
+    var second = Blockly.PHP.valueToCode(block, 'second', Blockly.PHP.ORDER_ATOMIC) || '0';
+    var speed = block.getFieldValue('speed');
+
+    var code = "";
+    code = ros_python_initialization(code);
+    code += '\n\n"""Starting the operation safe_movebot_sec."""\n';
+    code += 'raise NotImplementedError("This block is not implemented in Python yet!")';
+    return code;
+}
+
 Blockly.PHP['movebot_dis'] = function(block) {
     var dropdown_direction = block.getFieldValue('direction');
     var value_distance = Blockly.PHP.valueToCode(block, 'distance', Blockly.PHP.ORDER_ATOMIC);
