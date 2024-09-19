@@ -321,6 +321,37 @@ Blockly.PHP['movebot_link'] = function(block) {
     return code;
 };
 
+Blockly.Python['movebot_link'] = function(block) {
+    var distance = Blockly.PHP.valueToCode(block, 'meter', Blockly.PHP.ORDER_ATOMIC) || '0';
+    var code = "";
+    code = ros_python_initialization(code);
+    code += '\n\n"""Starting the operation movebot_link."""\n';
+    code += 'import actionlib\n';
+    code += 'from move_base_msgs.msg import MoveBaseGoal, MoveBaseAction\n';
+    code += 'from actionlib_msgs.msg import GoalStatus\n\n';
+    code += 'rate = rospy.Rate(10)\n';
+    code += 'distance = ' + distance + '\n';
+    code += 'move_base = actionlib.SimpleActionClient("/move_base", MoveBaseAction)\n';
+    code += 'rospy.loginfo("wait for the action server to come up")\n';
+    code += 'move_base.wait_for_server(rospy.Duration(5.0))\n\n';
+    code += 'goal = MoveBaseGoal()\n';
+    code += 'goal.target_pose.header.frame_id = "base_link"\n';
+    code += 'goal.target_pose.header.stamp = rospy.Time.now()\n';
+    code += 'goal.target_pose.pose.position.x = np.float64(distance)\n';
+    code += 'goal.target_pose.pose.orientation.w = 1\n';
+    code += 'move_base.send_goal(goal)\n';
+    code += 'success = move_base.wait_for_result(rospy.Duration(60))\n\n';
+    code += 'if not success:\n';
+    code += '   move_base.cancel_goal()\n';
+    code += '   rospy.loginfo(f"The base failed to move {str(distance)} meter forward")\n';
+    code += '   return False\n';
+    code += 'elif success:\n';
+    code += '   state = move_base.get_state()\n'
+    code += '   if state == GoalStatus.SUCCEEDED:\n';
+    code += '       rospy.loginfo(f"The robot moved {str(distance)} meter forward")\n';
+    return code
+}
+
 Blockly.PHP['turnbot_link'] = function(block) {
     var value_degree = Blockly.PHP.valueToCode(block, 'degree', Blockly.PHP.ORDER_ATOMIC) || '0';
     var code = 'turnbotMap_degree(' + value_degree + ');\n';
