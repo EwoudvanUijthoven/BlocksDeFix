@@ -258,6 +258,18 @@ Blockly.PHP['scanner_data'] = function(block) {
     return [code, Blockly.PHP.ORDER_NONE];
 };
 
+Blockly.Python['scanner_data'] = function(block) {
+    var code = "";
+    code = ros_python_initialization(code);
+    code += '\n\n"""Starting the operation scanner_data."""\n';
+    code += 'global ranges_filter, intensities_filter, ranges_scanner, intensities_scanner, ranges_scanner_total, intensities_scanner_total\n';
+    code += 'ranges_scanner = list(ranges_scanner_total)\n';
+    code += 'rospy.loginfo("#################" + str(ranges_scanner[10]) + "#################")\n';
+    code += 'rospy.loginfo("#################" + str(len(ranges_scanner)) + "#################")\n\n';
+    code += ''
+    return code
+}
+
 Blockly.PHP['scanner_data_range'] = function(block) {
     var value_x_range = Blockly.PHP.valueToCode(block, 'x_range', Blockly.PHP.ORDER_ATOMIC) || '0';
     var value_y_range = Blockly.PHP.valueToCode(block, 'y_range', Blockly.PHP.ORDER_ATOMIC) || '0';
