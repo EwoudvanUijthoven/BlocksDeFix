@@ -1,3 +1,5 @@
+window.ros_initialized = false;
+
 Blockly.readPythonFile = function(file) {
     var rawFile = new XMLHttpRequest();
     var code = "";
@@ -15,6 +17,22 @@ Blockly.readPythonFile = function(file) {
     rawFile.send(null);
     return code;
 };
+
+function ros_python_initialization (code) {
+    if (!window.ros_initialized) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_init.py");
+        window.ros_initialized = true;
+    }
+    return code
+}
+
+function ros_python_method_initialization (code, rospy_rate) {
+    code += 'rospy.Rate(' + rospy_rate + ')\n'
+    code += 'twist = Twist()\n'
+    code += 'start = time.time()\n'
+    code += 'flag = True\n'
+    return code
+}
 
 Blockly.PHP['print_r'] = function(block) {
     var value_print_r = Blockly.PHP.valueToCode(block, 'print_r', Blockly.PHP.ORDER_NONE) || '\'\'';
@@ -106,10 +124,10 @@ Blockly.Python['movebot_sec'] = function(block) {
     var speed = block.getFieldValue('speed');
 
     var code = "";
-    code += '\n'
-    code += '# Starting to move the bot ' + direction + ' with ' + speed + ' speed for ' + second + ' seconds.'
-    code += '\n'
-    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_init.py");
+    code = ros_python_initialization(code)
+    code += '\n\n"""Starting the operation movebot_sec."""\n'
+    code = ros_python_method_initialization(code, '10')
+    code += '\ntwist.linear.z = 0.00\n'
     if (speed === 0) {
         code += 'twist.linear.x = 0.00'
     }
@@ -127,14 +145,8 @@ Blockly.Python['movebot_sec'] = function(block) {
     } else if (speed === "'fast'" && direction === "'Backward'") {
         code += 'twist.linear.x = -0.30'
     }
-    code += '\n'
-    code += 'second = ' + second.toString()
-    code += '\n'
-    code += '\n'
+    code += '\nsecond = ' + second.toString() + '\n\n'
     code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
-    code += '\n'
-    // code += 'raise Exception("Something went wrong!")'
-    // code += 'import postal'
     return code;
 }
 
@@ -145,6 +157,42 @@ Blockly.PHP['turnbot_sec'] = function(block) {
     var code = 'turnbot_second(' + dropdown_rotation + ',' + value_second + ',' + dropdown_speed + ');\n';
     return code;
 };
+
+Blockly.Python['turnbot_sec'] = function(block) {
+    var rotation = block.getFieldValue('rotation');
+    var second = Blockly.PHP.valueToCode(block, 'second', Blockly.PHP.ORDER_ATOMIC);
+    var speed = block.getFieldValue('speed');
+
+    var code = "";
+    code = ros_python_initialization(code)
+    code += '\n\n"""Starting the operation turnbot_sec."""\n'
+    code = ros_python_method_initialization(code, '10')
+    code += '\ntwist.linear.x = 0.00\n'
+    code += 'twist.linear.y = 0.00\n'
+    code += 'twist.linear.z = 0.00\n'
+    code += 'twist.angular.x = 0.00\n'
+    code += 'twist.angular.y = 0.00\n'
+    if (speed === 0) {
+        code += 'twist.angular.z = 0.00'
+    }
+    if (speed === "'slow'" && rotation === "'Right'") {
+        code += 'twist.angular.z = -0.10'
+    } else if (speed === "'normal'" && rotation === "'Right'") {
+        code += 'twist.angular.z = -0.25'
+    } else if (speed === "'fast'" && rotation === "'Right'") {
+        code += 'twist.angular.z = -0.75'
+    }
+    if (speed === "'slow'" && rotation === "'Left'") {
+        code += 'twist.angular.z = 0.10'
+    } else if (speed === "'normal'" && rotation === "'Left'") {
+        code += 'twist.angular.z = 0.25'
+    } else if (speed === "'fast'" && rotation === "'Left'") {
+        code += 'twist.angular.z = 0.75'
+    }
+    code += '\nsecond = ' + second.toString() + '\n\n'
+    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
+    return code;
+}
 
 Blockly.PHP['safe_movebot_sec'] = function(block) {
     var dropdown_direction = block.getFieldValue('direction');
