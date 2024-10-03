@@ -460,7 +460,10 @@ function resetClick() {
 function generateCode() {
     // Generate Python code and display it.
     Blockly.Python.INFINITE_LOOP_TRAP = null;
-    window.ros_initialized = false;
+    // Set all values to false
+    Object.keys(window.PythonConfig).forEach(key => {
+      window.PythonConfig[key] = false;
+    });
     var code = Blockly.Python.workspaceToCode(workspace);
 
     //find the load_xml in the code string
