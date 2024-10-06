@@ -13,6 +13,7 @@ window.PythonConfig =
         sleepbot_sec: false,
         safeMovement: false,
         safe_movebot_sec: false,
+        safe_movebot_distance: false,
     };
 
 Blockly.readPythonFile = function(file) {
@@ -187,6 +188,7 @@ Blockly.PHP['safe_movebot_sec'] = function(block) {
 };
 
 Blockly.Python['safe_movebot_sec'] = function(block) {
+    Blockly.Python.definitions_['time'] = 'import time';
     var dropdown_direction = block.getFieldValue('direction');
     var value_second = Blockly.PHP.valueToCode(block, 'second', Blockly.Python.ORDER_ATOMIC) || '0';
     var dropdown_speed = block.getFieldValue('speed');
@@ -197,12 +199,16 @@ Blockly.Python['safe_movebot_sec'] = function(block) {
         code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/helper_functions/safeMovement.py");
         window.PythonConfig.safeMovement = true;
     }
+    if (!window.PythonConfig.turnbot_degree) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/turnbot_degree.py");
+        window.PythonConfig.turnbot_degree = true;
+    }
     if (!window.PythonConfig.safe_movebot_sec) {
         code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/safe_movebot_sec.py");
         window.PythonConfig.safe_movebot_sec = true;
     }
-    code += '\n\n"""Starting the operation safe_movebot_sec."""\n';
-    code += 'safeMovebot_second(' + dropdown_direction + ',' + value_second + ',' + dropdown_speed + ')\n\n';
+    code += '"""Starting the operation safe_movebot_second."""\n';
+    code += 'safe_movebot_second(' + dropdown_direction + ',' + value_second + ',' + dropdown_speed + ')\n\n';
     return code;
 }
 
@@ -280,6 +286,36 @@ Blockly.PHP['safe_movebot_dis'] = function(block) {
     var value_distance = Blockly.PHP.valueToCode(block, 'distance', Blockly.PHP.ORDER_ATOMIC);
     var dropdown_speed = block.getFieldValue('speed');
     var code = 'safeMovebot_distance(' + dropdown_direction + ',' + value_distance + ',' + dropdown_speed + ');\n';
+    return code;
+};
+
+Blockly.Python['safe_movebot_dis'] = function(block) {
+    Blockly.Python.definitions_['tf'] = 'import tf';
+    Blockly.Python.definitions_['math'] = 'import math';
+    var dropdown_direction = block.getFieldValue('direction');
+    var value_distance = Blockly.Python.valueToCode(block, 'distance', Blockly.Python.ORDER_ATOMIC);
+    var dropdown_speed = block.getFieldValue('speed');
+
+    var code = "";
+    code = ros_python_initialization(code);
+    if (!window.PythonConfig.get_odom) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/helper_functions/get_odom.py");
+        window.PythonConfig.get_odom = true;
+    }
+    if (!window.PythonConfig.safeMovement) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/helper_functions/safeMovement.py");
+        window.PythonConfig.safeMovement = true;
+    }
+    if (!window.PythonConfig.turnbot_degree) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/turnbot_degree.py");
+        window.PythonConfig.turnbot_degree = true;
+    }
+    if (!window.PythonConfig.safe_movebot_distance) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/safe_movebot_distance.py");
+        window.PythonConfig.safe_movebot_distance = true;
+    }
+    code += '"""Starting the operation safe_movebot_distance."""\n';
+    code += 'safe_movebot_distance(' + dropdown_direction + ',' + value_distance + ',' + dropdown_speed + ')\n\n';
     return code;
 };
 

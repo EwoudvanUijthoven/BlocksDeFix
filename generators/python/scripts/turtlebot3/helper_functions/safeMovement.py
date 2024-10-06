@@ -25,3 +25,4 @@ def safeMovement(range1, range2, distance, direction):
                 break
 
     return scanBoolean_safe
+

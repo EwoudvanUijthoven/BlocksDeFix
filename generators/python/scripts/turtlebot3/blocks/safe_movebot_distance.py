@@ -1,30 +1,8 @@
-def safe_movebot_second(direction, second, speed):
+def safe_movebot_distance(direction, distance, speed):
+    twist = geometry_msgs.Twist()
+
     turnFlag = "Left"
     turnDegree = 0
-
-    rate = rospy.Rate(10)
-    twist = geometry_msgs.Twist()
-    start = time.time()
-    flag = True
-
-    twist.linear.z = 0.00
-
-    if second > 30:
-        second = 30
-
-    if speed == "slow" and direction == "Forward":
-        twist.linear.x = 0.05
-    elif speed == "normal" and direction == "Forward":
-        twist.linear.x = 0.07
-    elif speed == "fast" and direction == "Forward":
-        twist.linear.x = 0.10
-
-    if speed == "slow" and direction == "Backward":
-        twist.linear.x = -0.05
-    elif speed == "normal" and direction == "Backward":
-        twist.linear.x = -0.07
-    elif speed == "fast" and direction == "Backward":
-        twist.linear.x = -0.10
 
     fx_range = 345
     fy_range = 15
@@ -32,19 +10,76 @@ def safe_movebot_second(direction, second, speed):
     bx_range = 165
     by_range = 195
 
-    distance = 0.5
+    block_distance = 0.5
 
-    while not rospy.is_shutdown() and flag:
-        sample_time = time.time()
-        if (sample_time - start) > second:
-            flag = False
+    listener = tf.TransformListener()
+
+    if distance > 3:
+        distance = 3
+
+    twist.linear.z = 0.00
+    twist.linear.y = 0.00
+
+    twist.angular.x = 0.00
+    twist.angular.y = 0.00
+    twist.angular.z = 0.00
+
+    distance_moved = 0
+    rate = rospy.Rate(20)
+
+    if speed == "slow" and direction == "Forward":
+        twist.linear.x = 0.10
+    elif speed == "normal" and direction == "Forward":
+        twist.linear.x = 0.30
+    elif speed == "fast" and direction == "Forward":
+        twist.linear.x = 0.50
+
+    if speed == "slow" and direction == "Backward":
+        twist.linear.x = -0.10
+    elif speed == "normal" and direction == "Backward":
+        twist.linear.x = -0.30
+    elif speed == "fast" and direction == "Backward":
+        twist.linear.x = -0.50
+
+    odom_frame = "/odom"
+    try:
+        listener.waitForTransform(odom_frame, "/base_footprint", rospy.Time(0), rospy.Duration(1.0))
+        base_frame = "/base_footprint"
+    except (tf.Exception, tf.ConnectivityException, tf.LookupException):
+        try:
+            listener.waitForTransform(odom_frame, "/base_link", rospy.Time(0), rospy.Duration(1.0))
+            base_frame = "/base_link"
+        except (tf.Exception, tf.ConnectivityException, tf.LookupException):
+            rospy.loginfo("Cannot find transform between /odom and /base_link or /base_footprint")
+            rospy.signal_shutdown("tf Exception")
+
+    position = get_odom(listener, odom_frame, base_frame)
+    x_start = position.x
+    y_start = position.y
+
+    while not rospy.is_shutdown():
+        velocity_pub.publish(twist)
+        rate.sleep()
+        position = get_odom(listener, odom_frame, base_frame)
+        distance_moved = math.sqrt(math.pow((position.x - x_start), 2) + math.pow((position.y - y_start), 2))
+
+        print("distance: %s" % distance)
+        print("moved: %s" % distance_moved)
+        if distance_moved >= distance - 0.10:
+            if direction == "Forward":
+                twist.linear.x = 0.10
+            else:
+                twist.linear.x = -0.10
+
+        if distance_moved > distance:
+            print("Breaking!!!")
             break
-        checkAgain = False
 
+        checkAgain = False
         if turnDegree != 0:
             if direction == "Forward":
                 if turnFlag == "Right":
-                    if not safeMovement(turnDegree - 20, turnDegree + 20, 0.5, "Backward"):
+                    if not safeMovement(turnDegree - 20, turnDegree + 20, 0.5, 0):
                         turnbot_degree("Left", turnDegree, "normal")
                         turnFlag = "Left"
                         turnDegree = 0
@@ -52,7 +87,7 @@ def safe_movebot_second(direction, second, speed):
                         rospy.loginfo("*****there is still an obstacle to the left")
                         checkAgain = True
                 else:
-                    if not safeMovement(360 - turnDegree - 20, 360 - turnDegree + 20, 0.5, "Backward"):
+                    if not safeMovement(360 - turnDegree - 20, 360 - turnDegree + 20, 0.5, 0):
                         turnbot_degree("Right", turnDegree, "normal")
                         turnFlag = "Left"
                         turnDegree = 0
@@ -60,8 +95,8 @@ def safe_movebot_second(direction, second, speed):
                         rospy.loginfo("*****there is still an obstacle to the right")
                         checkAgain = True
             else:
-                if (turnFlag == 0):
-                    if not safeMovement(180 - turnDegree - 30, 180 - turnDegree + 20, 0.5, "Backward"):
+                if turnFlag == "Left":
+                    if not safeMovement(180 - turnDegree - 50, 180 - turnDegree + 20, 0.5, 0):
                         turnbot_degree("Right", turnDegree, "normal")
                         turnFlag = "Left"
                         turnDegree = 0
@@ -69,7 +104,7 @@ def safe_movebot_second(direction, second, speed):
                         rospy.loginfo("*****there is still an obstacle to the right")
                         checkAgain = True
                 else:
-                    if not safeMovement(180 + turnDegree - 20, 180 + turnDegree + 20, 0.5, "Backward"):
+                    if not safeMovement(180 + turnDegree - 20, 180 + turnDegree + 20, 0.5, 0):
                         turnbot_degree("Left", turnDegree, "normal")
                         turnFlag = "Left"
                         turnDegree = 0
@@ -78,7 +113,7 @@ def safe_movebot_second(direction, second, speed):
                         checkAgain = True
         else:
             if direction == "Forward":
-                if safeMovement(fx_range, fy_range, distance, direction):
+                if safeMovement(fx_range, fy_range, block_distance, direction):
                     rospy.loginfo("*****%There is a block near to you%!*****")
                     if safeMovement(16, 45, 0.6, "Backward"):
                         rospy.loginfo("*****There is a block near to left01!*****")
@@ -92,7 +127,6 @@ def safe_movebot_second(direction, second, speed):
                                         rospy.loginfo("*****There is a block near to left03!*****")
                                         if safeMovement(270, 289, 0.6, "Backward"):
                                             rospy.loginfo("*****There is a block near to right03!*****")
-                                            flag = False
                                             break
                                         else:
                                             turnFlag = "Right"
@@ -122,7 +156,7 @@ def safe_movebot_second(direction, second, speed):
                     rospy.loginfo("There is NO block near to you!")
 
             elif direction == "Backward":
-                if safeMovement(bx_range, by_range, distance, direction):
+                if safeMovement(bx_range, by_range, block_distance, direction):
                     rospy.loginfo("*****%There is a block near to you%!*****")
                     if safeMovement(135, 165, 0.6, "Backward"):
                         rospy.loginfo("*****There is a block near to left01!*****")
@@ -131,12 +165,11 @@ def safe_movebot_second(direction, second, speed):
                             if safeMovement(110, 134, 0.6, "Backward"):
                                 rospy.loginfo("*****There is a block near to left02!*****")
                                 if safeMovement(226, 250, 0.6, "Backward"):
-                                    rospy.loginfo("*****There is a block near to right02!*****")
+                                    rospy.loginfo("*****There is a block near to right01!*****")
                                     if safeMovement(90, 109, 0.6, "Backward"):
                                         rospy.loginfo("*****There is a block near to left03!*****")
                                         if safeMovement(251, 270, 0.6, "Backward"):
                                             rospy.loginfo("*****There is a block near to right03!*****")
-                                            flag = False
                                             break
                                         else:
                                             turnFlag = "Left"
@@ -167,20 +200,20 @@ def safe_movebot_second(direction, second, speed):
 
         if checkAgain:
             if direction == "Forward":
-                if safeMovement(fx_range, fy_range, distance, direction):
+                if safeMovement(fx_range, fy_range, block_distance, direction):
                     rospy.loginfo("*****%There is a block near to you%! - I am breaking!!!*****")
-                    flag = False
                     break
             else:
-                if safeMovement(bx_range, by_range, distance, direction):
-                    rospy.loginfo("*****%There is a block near to you%! - I am Breaking!!!*****")
-                    flag = False
+                if safeMovement(bx_range, by_range, block_distance, direction):
+                    rospy.loginfo("*****%There is a block near to you%! - I am breaking!!!*****")
                     break
         velocity_pub.publish(twist)
         rate.sleep()
 
     twist = geometry_msgs.Twist()
+    twist.linear.x = 0
     velocity_pub.publish(twist)
     rate.sleep()
-    return 'Second Movement Data Sent!'
+
+    return 'Distance Movement Data Sent!'
 
