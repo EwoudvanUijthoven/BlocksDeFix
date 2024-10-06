@@ -376,7 +376,7 @@ Blockly.Python['scanner_data_range'] = function(block) {
         code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/scanner_data_range.py");
         window.PythonConfig.scanner_data_range = true;
     }
-    code += '"""Starting the operation scanner_data."""\n';
+    code += '"""Starting the operation scanner_data_range."""\n';
     code += 'scanner_data_range('+ value_x_range + ',' + value_y_range + ')\n\n';
     return [code, Blockly.Python.ORDER_ATOMIC];
 };
@@ -400,6 +400,7 @@ Blockly.Python['scanner_data_check'] = function(block) {
         code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/scanner_data_check.py");
         window.PythonConfig.scanner_data_check = true;
     }
+    code += '"""Starting the operation scanner_data_check."""\n';
     code += 'scanner_data_check(' + value_x_range + ',' + value_y_range + ',' + value_distance +')\n\n';
     return [code, Blockly.Python.ORDER_ATOMIC];
 };
