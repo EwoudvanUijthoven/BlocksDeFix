@@ -14,6 +14,9 @@ window.PythonConfig =
         safeMovement: false,
         safe_movebot_sec: false,
         safe_movebot_distance: false,
+        scanner_data: false,
+        scanner_data_range: false,
+        scanner_data_check: false,
     };
 
 Blockly.readPythonFile = function(file) {
@@ -347,12 +350,12 @@ Blockly.PHP['scanner_data'] = function(block) {
 Blockly.Python['scanner_data'] = function(block) {
     var code = "";
     code = ros_python_initialization(code);
-    code += '\n\n"""Starting the operation scanner_data."""\n';
-    code += 'global ranges_filter, intensities_filter, ranges_scanner, intensities_scanner, ranges_scanner_total, intensities_scanner_total\n';
-    code += 'ranges_scanner = list(ranges_scanner_total)\n';
-    code += 'rospy.loginfo("#################" + str(ranges_scanner[10]) + "#################")\n';
-    code += 'rospy.loginfo("#################" + str(len(ranges_scanner)) + "#################")\n\n';
-    code += ''
+    if (!window.PythonConfig.scanner_data) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/scanner_data.py");
+        window.PythonConfig.scanner_data = true;
+    }
+    code += '"""Starting the operation scanner_data."""\n';
+    code += 'scanner_data()\n\n';
     return code
 }
 
@@ -363,12 +366,42 @@ Blockly.PHP['scanner_data_range'] = function(block) {
     return [code, Blockly.PHP.ORDER_ATOMIC];
 };
 
+Blockly.Python['scanner_data_range'] = function(block) {
+    var value_x_range = Blockly.Python.valueToCode(block, 'x_range', Blockly.Python.ORDER_ATOMIC) || '0';
+    var value_y_range = Blockly.Python.valueToCode(block, 'y_range', Blockly.Python.ORDER_ATOMIC) || '0';
+
+    var code = "";
+    code = ros_python_initialization(code);
+    if (!window.PythonConfig.scanner_data_range) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/scanner_data_range.py");
+        window.PythonConfig.scanner_data_range = true;
+    }
+    code += '"""Starting the operation scanner_data."""\n';
+    code += 'scanner_data_range('+ value_x_range + ',' + value_y_range + ')\n\n';
+    return [code, Blockly.Python.ORDER_ATOMIC];
+};
+
 Blockly.PHP['scanner_data_check'] = function(block) {
     var value_x_range = Blockly.PHP.valueToCode(block, 'x_range', Blockly.PHP.ORDER_ATOMIC) || '0';
     var value_y_range = Blockly.PHP.valueToCode(block, 'y_range', Blockly.PHP.ORDER_ATOMIC) || '0';
     var value_distance = Blockly.PHP.valueToCode(block, 'distance', Blockly.PHP.ORDER_ATOMIC) || '10';
     var code = 'laser_scanner_data_check(' + value_x_range + ',' + value_y_range + ',' + value_distance +')';
     return [code, Blockly.PHP.ORDER_ATOMIC];
+};
+
+Blockly.Python['scanner_data_check'] = function(block) {
+    var value_x_range = Blockly.Python.valueToCode(block, 'x_range', Blockly.Python.ORDER_ATOMIC) || '0';
+    var value_y_range = Blockly.Python.valueToCode(block, 'y_range', Blockly.Python.ORDER_ATOMIC) || '0';
+    var value_distance = Blockly.Python.valueToCode(block, 'distance', Blockly.Python.ORDER_ATOMIC) || '10';
+
+    var code = "";
+    code = ros_python_initialization(code);
+    if (!window.PythonConfig.scanner_data_check) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/scanner_data_check.py");
+        window.PythonConfig.scanner_data_check = true;
+    }
+    code += 'scanner_data_check(' + value_x_range + ',' + value_y_range + ',' + value_distance +')\n\n';
+    return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.PHP['stop_bot'] = function(block) {
