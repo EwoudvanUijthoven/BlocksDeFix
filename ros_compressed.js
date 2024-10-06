@@ -11,6 +11,8 @@ window.PythonConfig =
         get_odomRotate: false,
         turnbot_degree: false,
         sleepbot_sec: false,
+        safeMovement: false,
+        safe_movebot_sec: false,
     };
 
 Blockly.readPythonFile = function(file) {
@@ -185,14 +187,22 @@ Blockly.PHP['safe_movebot_sec'] = function(block) {
 };
 
 Blockly.Python['safe_movebot_sec'] = function(block) {
-    var direction = block.getFieldValue('direction');
-    var second = Blockly.PHP.valueToCode(block, 'second', Blockly.PHP.ORDER_ATOMIC) || '0';
-    var speed = block.getFieldValue('speed');
+    var dropdown_direction = block.getFieldValue('direction');
+    var value_second = Blockly.PHP.valueToCode(block, 'second', Blockly.Python.ORDER_ATOMIC) || '0';
+    var dropdown_speed = block.getFieldValue('speed');
 
     var code = "";
     code = ros_python_initialization(code);
+    if (!window.PythonConfig.safeMovement) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/helper_functions/safeMovement.py");
+        window.PythonConfig.safeMovement = true;
+    }
+    if (!window.PythonConfig.safe_movebot_sec) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/safe_movebot_sec.py");
+        window.PythonConfig.safe_movebot_sec = true;
+    }
     code += '\n\n"""Starting the operation safe_movebot_sec."""\n';
-    code += 'raise NotImplementedError("This block is not implemented in Python yet!")';
+    code += 'safeMovebot_second(' + dropdown_direction + ',' + value_second + ',' + dropdown_speed + ')\n\n';
     return code;
 }
 
