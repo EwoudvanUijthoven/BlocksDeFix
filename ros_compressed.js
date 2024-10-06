@@ -17,6 +17,7 @@ window.PythonConfig =
         scanner_data: false,
         scanner_data_range: false,
         scanner_data_check: false,
+        stop_bot: false,
     };
 
 Blockly.readPythonFile = function(file) {
@@ -411,19 +412,16 @@ Blockly.PHP['stop_bot'] = function(block) {
 };
 
 Blockly.Python['stop_bot'] = function(block) {
+    Blockly.Python.definitions_['time'] = 'import time';
+
     var code = "";
     code = ros_python_initialization(code);
-    code += '\n\n"""Starting the operation stop_bot."""\n';
-    code = ros_python_method_initialization(code, '10');
-    code += '\ntwist.linear.x = 0.00\n';
-    code += 'twist.linear.y = 0.00\n';
-    code += 'twist.linear.z = 0.00\n';
-    code += 'twist.angular.x = 0.00\n';
-    code += 'twist.angular.y = 0.00\n';
-    code += 'twist.angular.z = 0.00\n';
-    code += '\nsecond = 2\n\n';
-    code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/movebot_run.py");
-    code += '\nrospy.loginfo("*********************ROBOT STOPPED**************************")';
+    if (!window.PythonConfig.stop_bot) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/stop_bot.py");
+        window.PythonConfig.stop_bot = true;
+    }
+    code += '"""Starting the operation stop_robot."""\n';
+    code += 'stop_robot()\n\n';
     return code;
 }
 
