@@ -596,9 +596,11 @@ function secondTime() {
 //this function is to post and call the evel.php & show the output
 function remoteEval(code) {
     var url = "http://127.0.0.1:8099/run_generated_code";
+    var hint_url = "http://127.0.0.1:5000/get_debugging_hint";
     var method = "POST";
     var async = true;
     var request = new XMLHttpRequest();
+    var hint_request = new XMLHttpRequest();
     var output = document.getElementById('output');
 
     request.onreadystatechange = function() {
@@ -620,7 +622,23 @@ function remoteEval(code) {
                     var str_status = "Status:" + response.status;
                     var str_output = response.output;
                     var str_error = response.error;
-                    output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
+                    hint_request.open(method, hint_url, async);
+                    hint_request.setRequestHeader("Content-Type", "application/json");
+                    var body = JSON.stringify({
+                        "code": code.toString(),
+                        "output": str_output,
+                        "error": str_error
+
+                    });
+                    hint_request.onreadystatechange = function() {
+                        if (hint_request.readyState === 4) {
+                            if (hint_request.status === 200) {
+                                var hint_response = JSON.parse(hint_request.responseText);
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + hint_response.hint_text;
+                            }
+                        }
+                    };
+                    hint_request.send(body);
                 }
             } else {
                 document.getElementById('output').textContent = 'HTTP Error: ' + request.status;
