@@ -625,7 +625,7 @@ function remoteEval(code) {
                     hint_request.open(method, hint_url, async);
                     hint_request.setRequestHeader("Content-Type", "application/json");
                     var body = JSON.stringify({
-                        "code": code.toString(),
+                        "code": document.getElementById('xmlCode').value,
                         "output": str_output,
                         "error": str_error
 
