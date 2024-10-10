@@ -614,7 +614,27 @@ function remoteEval(code) {
                     var str_status = "Status:" + response.status;
                     var str_output = response.output;
                     var str_error = response.error;
-                    output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
+                    hint_request.open(method, hint_url, async);
+                    hint_request.setRequestHeader("Content-Type", "application/json");
+                    var body = JSON.stringify({
+                        "code": document.getElementById('xmlCode').value,
+                        "output": str_output,
+                        "error": str_error,
+                        "status": response.status.toString()
+
+                    });
+                    hint_request.onreadystatechange = function() {
+                        if (hint_request.readyState === 4) {
+                            if (hint_request.status === 200) {
+                                var hint_response = JSON.parse(hint_request.responseText);
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + hint_response.hint_text;
+                            }
+                            else {
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
+                            }
+                        }
+                    };
+                    hint_request.send(body);
                 } else {
                     alert("Program running unsuccesfully!")
                     document.getElementById("loader").style.display="none";
@@ -627,7 +647,8 @@ function remoteEval(code) {
                     var body = JSON.stringify({
                         "code": document.getElementById('xmlCode').value,
                         "output": str_output,
-                        "error": str_error
+                        "error": str_error,
+                        "status": response.status.toString()
 
                     });
                     hint_request.onreadystatechange = function() {
@@ -635,6 +656,9 @@ function remoteEval(code) {
                             if (hint_request.status === 200) {
                                 var hint_response = JSON.parse(hint_request.responseText);
                                 output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + hint_response.hint_text;
+                            }
+                            else {
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
                             }
                         }
                     };
