@@ -602,6 +602,8 @@ function remoteEval(code) {
     var request = new XMLHttpRequest();
     var hint_request = new XMLHttpRequest();
     var output = document.getElementById('output');
+    var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
     request.onreadystatechange = function() {
         if (request.readyState === 4) { // When request is done
@@ -617,7 +619,7 @@ function remoteEval(code) {
                     hint_request.open(method, hint_url, async);
                     hint_request.setRequestHeader("Content-Type", "application/json");
                     var body = JSON.stringify({
-                        "code": document.getElementById('xmlCode').value,
+                        "code": xmlText,
                         "output": str_output,
                         "error": str_error,
                         "status": response.status.toString()
@@ -645,7 +647,7 @@ function remoteEval(code) {
                     hint_request.open(method, hint_url, async);
                     hint_request.setRequestHeader("Content-Type", "application/json");
                     var body = JSON.stringify({
-                        "code": document.getElementById('xmlCode').value,
+                        "code": xmlText,
                         "output": str_output,
                         "error": str_error,
                         "status": response.status.toString()
