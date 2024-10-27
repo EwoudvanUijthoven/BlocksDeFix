@@ -47,15 +47,7 @@ function ros_python_initialization (code) {
         window.PythonConfig.ros_initialized = true;
     }
     return code
-}
-
-function ros_python_method_initialization (code, rospy_rate) {
-    code += 'rospy.Rate(' + rospy_rate + ')\n'
-    code += 'twist = Twist()\n'
-    code += 'start = time.time()\n'
-    code += 'flag = True\n'
-    return code
-}
+};
 
 Blockly.PHP['print_r'] = function(block) {
     var value_print_r = Blockly.PHP.valueToCode(block, 'print_r', Blockly.PHP.ORDER_NONE) || '\'\'';
@@ -63,8 +55,20 @@ Blockly.PHP['print_r'] = function(block) {
     return code;
 };
 
+Blockly.Python['print_r'] = function(block) {
+    var value_print_r = Blockly.Python.valueToCode(block, 'print_r', Blockly.Python.ORDER_NONE) || '\'\'';
+    Blockly.Python.definitions_['pprint'] = 'from pprint import pprint';
+    var code = 'pprint(' + value_print_r + ')\n';
+    return code;
+};
+
 Blockly.PHP['tag_br'] = function(block) {
     var code = 'echo "<br />";\n';
+    return code;
+};
+
+Blockly.Python['tag_br'] = function(block) {
+    var code = 'print()\n';
     return code;
 };
 
