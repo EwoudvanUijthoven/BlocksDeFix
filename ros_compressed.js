@@ -18,6 +18,7 @@ window.PythonConfig =
         scanner_data_range: false,
         scanner_data_check: false,
         stop_bot: false,
+        load_xml: false,
     };
 
 Blockly.readPythonFile = function(file) {
@@ -93,6 +94,20 @@ Blockly.PHP['foreach_simple'] = function(block) {
 Blockly.PHP['load_xml'] = function(block) {
     var value_xml = Blockly.PHP.valueToCode(block, 'xml', Blockly.PHP.ORDER_ATOMIC);
     var code = 'load_xml(' + value_xml + ');\n';
+    return code;
+};
+
+Blockly.Python['load_xml'] = function(block) {
+    Blockly.Python.definitions_['elementtree'] = 'import xml.etree.ElementTree as ET';
+    var value_xml = Blockly.Python.valueToCode(block, 'xml', Blockly.Python.ORDER_ATOMIC);
+    var code = "";
+    code = ros_python_initialization(code);
+    if (!window.PythonConfig.load_xml) {
+        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/blocks/load_xml.py");
+        window.PythonConfig.load_xml = true;
+    }
+    code += '"""Starting the operation load_xml."""\n';
+    code += 'load_xml(' + value_xml + ')\n\n';
     return code;
 };
 
