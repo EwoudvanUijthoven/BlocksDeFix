@@ -622,7 +622,8 @@ function remoteEval(code) {
                         "code": xmlText,
                         "output": str_output,
                         "error": str_error,
-                        "status": response.status.toString()
+                        "status": response.status.toString(),
+                        "code_language": "Python"
 
                     });
                     hint_request.onreadystatechange = function() {
@@ -650,7 +651,8 @@ function remoteEval(code) {
                         "code": xmlText,
                         "output": str_output,
                         "error": str_error,
-                        "status": response.status.toString()
+                        "status": response.status.toString(),
+                        "code_language": "Python"
 
                     });
                     hint_request.onreadystatechange = function() {

@@ -489,9 +489,13 @@ function uploadCode(code, callback) {
     var target = document.getElementById('content_arduino');
     var spinner = new Spinner().spin(target);
     var url = "http://127.0.0.1:8090/upload";
+    var hint_url = "http://127.0.0.1:5000/get_debugging_hint";
     var method = "POST";
     var async = true;
     var request = new XMLHttpRequest();
+    var hint_request = new XMLHttpRequest();
+    var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
     request.onreadystatechange = function() {
         if (request.readyState != 4) {
@@ -507,6 +511,7 @@ function uploadCode(code, callback) {
             case 200:
                 //show the Arduino output in BEESM output panel
                 obj = JSON.parse(request.response);
+                var response = JSON.parse(request.responseText);
 
                 console.log(obj);
                 var output = document.getElementById('output');
@@ -517,11 +522,32 @@ function uploadCode(code, callback) {
                     var str_status = "Status:" + obj.status;
                     var str_output = obj.output;
                     var str_error = obj.error;
-                    // var str_hint = "insert hint retrieval"
-                    // output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + str_hint;
-                    output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
-                    var sMonitor = "\nSerial Monitor Output:\n";
-                    output.innerHTML = output.innerHTML + sMonitor.bold();
+                    hint_request.open(method, hint_url, async);
+                    hint_request.setRequestHeader("Content-Type", "application/json");
+                    var body = JSON.stringify({
+                        "code": xmlText,
+                        "output": str_output,
+                        "error": str_error,
+                        "status": response.status.toString(),
+                        "code_language": "Arduino"
+
+                    });
+                    hint_request.onreadystatechange = function() {
+                        if (hint_request.readyState === 4) {
+                            if (hint_request.status === 200) {
+                                var hint_response = JSON.parse(hint_request.responseText);
+                                output.innerHTML = str_status + "\n" + str_output + "\n"  + hint_response.hint_text;
+                                var sMonitor = "\nSerial Monitor Output:\n";
+                                output.innerHTML = output.innerHTML + sMonitor.bold();
+                            }
+                            else {
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
+                                var sMonitor = "\nSerial Monitor Output:\n";
+                                output.innerHTML = output.innerHTML + sMonitor.bold();
+                            }
+                        }
+                    };
+                    hint_request.send(body);
                 }
                 else {
                     alert("Program unsuccessful!");
@@ -530,8 +556,7 @@ function uploadCode(code, callback) {
                     var str_status = "Status:" + obj.status;
                     var str_output = obj.output;
                     var str_error = obj.error;
-                    // var str_hint = "insert hint retrieval"
-                    // output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + str_hint;
+                    // No hint generation for these kind of errors
                     output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
                 }
                 break;
