@@ -629,7 +629,7 @@ function remoteEval(code) {
                         if (hint_request.readyState === 4) {
                             if (hint_request.status === 200) {
                                 var hint_response = JSON.parse(hint_request.responseText);
-                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + hint_response.hint_text;
+                                output.innerHTML = str_status + "\n" + str_output + "\n"  + hint_response.hint_text;
                             }
                             else {
                                 output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
@@ -657,7 +657,7 @@ function remoteEval(code) {
                         if (hint_request.readyState === 4) {
                             if (hint_request.status === 200) {
                                 var hint_response = JSON.parse(hint_request.responseText);
-                                output.innerHTML = str_status + "\n" + str_output + "\n" + str_error + "\n" + hint_response.hint_text;
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + hint_response.hint_text;
                             }
                             else {
                                 output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
