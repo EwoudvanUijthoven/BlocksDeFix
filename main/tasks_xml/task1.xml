@@ -1,0 +1,31 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables>
+    <variable type="" id="ZSinYwZ1v2+KT-1(8wAw">x</variable>
+  </variables>
+  <block type="controls_if" id="T|w3E$P~[]G]ZzB$ykSn" x="216" y="162">
+    <value name="IF0">
+      <block type="logic_compare" id="li0tIB*QDDX!`D3]jTt/">
+        <field name="OP">EQ</field>
+        <value name="A">
+          <block type="text" id="qhc#ydhQW;365m#U#OGU">
+            <field name="TEXT">a</field>
+          </block>
+        </value>
+        <value name="B">
+          <block type="text" id="s9lf*(I1qhackg$nOZ[?">
+            <field name="TEXT">b</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <statement name="DO0">
+      <block type="text_print" id="8`0W~f_[b,^(.hx:x%;N">
+        <value name="TEXT">
+          <block type="text" id="UA2?5mpIRINWF|sbYN3h">
+            <field name="TEXT"> task1</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+</xml>
