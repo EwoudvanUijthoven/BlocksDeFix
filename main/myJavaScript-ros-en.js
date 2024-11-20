@@ -127,11 +127,6 @@ reColor(Blockly.Blocks['raspy_arduino_read'], Arduino_color);
 //--------------------------------
 //field of programming
 document.getElementById("tb3").style.background = "rgb(27, 94, 32)";
-document.getElementById("english").style.background = "rgb(27, 94, 32)";
-//--------------------------------
-function consoleLog(msg){
-    //console.log(msg);
-}
 //--------------------------------
 //Autocode generate flag
 var currentValue = document.getElementById("auto").value = "Off";
@@ -251,12 +246,12 @@ function saveRos() {
         rosLink = document.createElement("a");
 
         if (rosFileName) {
-			if (rosFileName.indexOf(".beesm") == -1) {
-				rosFileName  = rosFileName+".beesm";
+			if (rosFileName.indexOf(".py") == -1) {
+				rosFileName  = rosFileName+".py";
 			}
             rosLink.download = rosFileName;
         } else {
-            rosLink.download = 'rosCode[' + saveRos_clicks + '].beesm';
+            rosLink.download = 'rosCode[' + saveRos_clicks + '].py';
         }
         rosLink.innerHTML = "Download File";
         if (window.webkitURL != null) {
@@ -312,7 +307,7 @@ $(function() {
     });
 });
 //--------------------------------
-//visiable and invisiable the code modifier textbox and run button
+//visible and invisible the code modifier textbox and run button
 $('#modify').click(function() {
     $('#modifier').show();
     hljs.highlightBlock($('#modifyCodeDiv').get(0));
@@ -349,11 +344,11 @@ function WebSocketRos() {
 
         websocket.onmessage = function (evt) {
             var received_msg = evt.data;
-            consoleLog("ROS-Data recieved...");//document.getElementById('msg').innerHTML = evt.data;
-            consoleLog(received_msg);
+            console.log("ROS-Data recieved...");//document.getElementById('msg').innerHTML = evt.data;
+            console.log(received_msg);
             var obj = JSON.parse(received_msg);
             if (obj.type === "update_loc") {
-                consoleLog("location of th TB3 changed!");
+                console.log("location of th TB3 changed!");
                 x_loc = obj.x;
                 y_loc = obj.y;
                 z_loc = obj.z;
@@ -364,13 +359,6 @@ function WebSocketRos() {
                 x_loc = toInt((x_loc * x_factor) + 22.5) + 2;
                 y_loc = toInt(((y_loc * y_factor)*-1) + 10) + 2;
 
-                if(x_loc_white != x_loc || y_loc_white != y_loc || z_loc_white != z_loc){
-                    //to have the follow up
-                    cellWhite(y_loc_white, x_loc_white, z_loc_white);
-                }
-
-                cellColor(y_loc, x_loc, z_loc);
-
             }
             x_loc_white = x_loc;
             y_loc_white = y_loc;
@@ -379,56 +367,24 @@ function WebSocketRos() {
 
         websocket.onclose = function() {
             // websocket is closed.
-            consoleLog("ROS-Connection is closed...");
+            console.log("ROS-Connection is closed...");
 	        setTimeout(function(){WebSocketRos()}, 15000);
         };
 
         websocket.onerror   = function (evt) {
-            consoleLog('ROS-Error occured: ' + evt.data);
+            console.log('ROS-Error occured: ' + evt.data);
         };
 
         window.onbeforeunload = function(evt) {
-            ws.close();
+            websocket.close();
         };
 
     } else {
         // The browser doesn't support WebSocket
-        consoleLog("ROS-WebSocket NOT supported by your Browser!");
+        console.log("ROS-WebSocket NOT supported by your Browser!");
     }
 
 }
-//--------------------------------
-//UI for Robot
-var previousClassList;
-
-function cellColor(x,y,z) {
-    var myTable = document.getElementById("baallTable");//.getElementsByTagName("td");
-
-    myTable.rows[x].cells[y].innerHTML = "<";
-    myTable.rows[x].cells[y].style.backgroundColor = "#AD1457";
-    myTable.rows[x].cells[y].classList.add("turtlebot");
-
-    if(z>=0.90 && z<=-0.90){
-        myTable.rows[x].cells[y].style.transform = "rotate(0deg)";
-    }else if(z>0.30 && z<0.90){
-        myTable.rows[x].cells[y].style.transform = "rotate(90deg)";
-    }else if(z>=-0.30 && z<=0.30){
-        myTable.rows[x].cells[y].style.transform = "rotate(180deg)";
-    }else if(z>-0.90 && z<-0.30){
-        myTable.rows[x].cells[y].style.transform = "rotate(270deg)";
-    }
-}
-
-function cellWhite(x,y,z) {
-    var myTable = document.getElementById("baallTable");//.getElementsByTagName("td");
-    if(x !== null) {
-        myTable.rows[x].cells[y].innerHTML = " ";
-
-        myTable.rows[x].cells[y].classList.remove("turtlebot");
-    }
-    myTable.rows[x].cells[y].style.transform = null;
-}
-//--------------------------------
 
 //--------------------------------
 var workspace = Blockly.inject('blocklyDiv',
@@ -540,8 +496,12 @@ function sleep(milliseconds) {
     }
 }
 //--------------------------------
+var run_code_clicks = 0;
+
+
 function runCode() {
     //run from workspace
+    ++run_code_clicks;
     if ($('#rosCode').css('visibility') == 'visible' && $('#modifier').css('display') == 'none') {
         Blockly.PHP.INFINITE_LOOP_TRAP = null;
         var my_element = document.getElementById('rosCode');
@@ -565,34 +525,6 @@ function runCode() {
 	    document.getElementById("run").disabled = true;
         remoteEval(ros_code);
     }
-}
-//--------------------------------
-//execute runCode for second time --> needs to be changed and modify (for draw baall)
-function secondTime() {
-    /*if ($('#designBaall-wrapper').css('display') != 'none' && $('#baall-wrapper').css('display') == 'none') {
-        setTimeout(
-            function() {
-                if ($('#rosCode').css('visibility') == 'visible' && $('#modifier').css('display') == 'none') {
-                    Blockly.PHP.INFINITE_LOOP_TRAP = null;
-                    remoteEval(code);
-                    var my_element = document.getElementById('rosCode');
-                    var my_str = my_element.innerText || my_element.textContent;
-                    //this is to copy the value of "my_str" into the textarea
-                    document.getElementById("modifyCode").value = my_str;
-                    var code = document.getElementById("modifyCode").value;
-                }
-                //run from code modifier
-                else if ($('#rosCode').css('visibility') != 'visible' && $('#modifier').css('display') != 'none') {
-                    var my_element = document.getElementById('modifyCodeDiv');
-                    var my_str = my_element.innerText || my_element.textContent;
-                    document.getElementById("modifyCode").value = my_str;
-                    var ros_code = document.getElementById("modifyCode").value;
-                    if (ros_code === null) {
-                        showCode();
-                    }
-                }
-            }, 150);
-    }*/
 }
 //--------------------------------
 //this function is to post and call the evel.php & show the output
@@ -692,13 +624,6 @@ function remoteSaveXML(code, name) {
     }
     xhr.send(code);
 }
-//--------------------------------
-function remoteSaveTimer(code) {
-	var work_area = "ROS";
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "saveTime.php?task="+getTask()+"&area="+work_area, true);
-    xhr.send(code);
-}
 
 /**
  * Starts a task by loading the corresponding XML file.
@@ -712,10 +637,13 @@ function remoteSaveTimer(code) {
 function startTask(task_nr) {
     taskFlag = task_nr;
     if (task_nr === 1) {
+        startTimer(600);
         loadXML_from_files("tasks_xml/task1.xml");
     } else if (task_nr === 2) {
+        startTimer(600);
         loadXML_from_files("tasks_xml/task2.xml");
     } else if (task_nr === 3) {
+        startTimer(600);
         loadXML_from_files("tasks_xml/task3.xml");
     } else {
         alert("Task number not found!");
@@ -733,18 +661,63 @@ function endTask() {
         alert("No task is currently active.");
         throw new Error("No task is currently active.");
     }
-    let log_text = "Task " + taskFlag.toString() + "," + "start_time_placeholder," + "end_time_placeholder," + "number_of_tries_placeholder";
+    stopTimer();
+    let log_text = "Task " + taskFlag.toString() + "," + elapsedTime.toString() + "," + run_code_clicks.toString();
     logToFile(log_text)
     console.log("End task:", taskFlag);
     taskFlag = undefined;
 }
 
+var intervalId;
+var elapsedTime = 0;
+
+/**
+ * Starts a timer with a specified time limit.
+ * The timer counts down from the given time limit and updates the display every second.
+ * When the time is up, an alert is shown and the timer stops.
+ *
+ * @param {number} time_limit - The time limit in seconds for the timer.
+ */
+function startTimer(time_limit) {
+    clearInterval(intervalId); // Clear any existing timer
+    document.getElementById('timer_display').style.visibility = 'visible';
+    intervalId = setInterval(function() {
+        elapsedTime++;
+        let time_left = time_limit - elapsedTime;
+        document.getElementById('timer_display').innerHTML = time_left.toString();
+        if (elapsedTime >= time_limit) {
+            alert("Time is up!");
+            stopTimer();
+        }
+    }, 1000);
+}
+
+/**
+ * Stops the currently running timer and hides the timer display.
+ * Clears the interval to stop the timer from updating.
+ */
+function stopTimer() {
+    clearInterval(intervalId);
+    document.getElementById('timer_display').style.visibility = 'hidden';
+}
+
+/**
+ * Logs the provided text to a file on the server.
+ * Sends the log text to the server using an XMLHttpRequest.
+ *
+ * @param {string} log - The log text to be saved.
+ */
 function logToFile(log) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "logFile.php?task="+taskFlag, true);
     xhr.send(log);
 }
 
+/**
+ * Returns the xml code on the workspace.
+ *
+ * @param file_path
+ */
 function loadXML_from_files(file_path) {
     var fileToLoad = file_path;
 

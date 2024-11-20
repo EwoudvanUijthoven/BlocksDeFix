@@ -669,10 +669,3 @@ function remoteSaveXML(code, name) {
     }
     xhr.send(code);
 }
-//--------------------------------
-function remoteSaveTimer(code) {
-	var work_area = "ARDU";
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "saveTime.php?task="+getTask()+"&area="+work_area, true);
-    xhr.send(code);
-}

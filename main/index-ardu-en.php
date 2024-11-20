@@ -90,7 +90,6 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
     </div>
     <!----------->
     <!--TIMERS-->
-    <script src="myTimer.js"></script>
     <!----------->
     <div id="leftDiv">
         <!--this is too design the Blockly workspace-->
@@ -107,7 +106,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
                         </td>
                         <td class="btnsTd" style="width: 20%;"><input id="fileName"></input>
                         </td>
-                        <td class="btnsTd" style="width: 20%;"><input class="btn" id="saving" type="button" value="Save Blocks" onclick="saveXML(); saveTimer();" /></td>
+                        <td class="btnsTd" style="width: 20%;"><input class="btn" id="saving" type="button" value="Save Blocks" onclick="saveXML();" /></td>
 
                         <td align="right" class="btnsTd" style="width: 12%;">
                             <h5 style="margin:0px;">Select File:</h5>
@@ -133,7 +132,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
     <!----------->
     <div id="rightDiv">
         <div class="codeBtn">
-            <button class="btn" id="run" onclick="runCode();secondTime();uploadClick();">Upload Code</button>
+            <button class="btn" id="run" onclick="runCode();uploadClick();">Upload Code</button>
             <button class="btn" id="generate" onclick="generateCode(); generate();">Generate Code</button>
             <button class="btn" id="modify" onclick="">Code Modifier</button>
             <button class="btn" id="auto" onclick="autoCode()">AutoCode Generator</button>
