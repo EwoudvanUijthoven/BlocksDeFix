@@ -96,7 +96,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
             <button class="btn_task" id="Task1" onclick="startTask(1)" style="float:left;">Start Task 1</button>
             <button class="btn_task" id="Task2" onclick="startTask(2)" style="float:left;">Start Task 2</button>
             <button class="btn_task" id="Task3" onclick="startTask(3)" style="float:left;">Start Task 3</button>
-            <button class="btn_task" id="Task4" onclick="endTask()" style="float:left;">End Task</button>
+            <button class="btn_task" id="TaskEnd" onclick="endTask()" style="float:left;">End Task</button>
             <span id="no_task" style="float:left; padding: 5px; display: none;"></span>
             <!----------->
             <button class="btn_tabs" id="tb3" onclick="#" style="float:right;" disabled>TurtleBot 3</button>
