@@ -27,45 +27,9 @@
     <script src="custom-blocks-ardu.js"></script>
     <script src="../arduino_compressed.js"></script>
     <script type="text/javascript" src="spin.js"></script>
-    <script type="text/javascript">
-        //storing data when the page is refereshed - total time will be added to the time of example complitance
-        // Run on page load
-        window.onload = function() {
-            // If sessionStorage is storing default values (ex. expTimer_txt), exit the function and do not restore data
-            if (sessionStorage.getItem('expTimer_txt') == "expTimer_txt") {
-                return;
-            }
-            // If values are not blank, restore them to the fields
-            var expTimer_txt = sessionStorage.getItem('expTimer_txt');
-            if (expTimer_txt !== null) $('#expTimer_txt').val(expTimer_txt); //or totalTimer_txt
-        }
-        // Before refreshing the page, save the data to sessionStorage
-        window.onbeforeunload = function() {
-            sessionStorage.setItem("expTimer_txt", $('#expTimer_txt').val() + $('#totalTimer_txt').val()); //or totalTimer_txt
-        }
-    </script>
 </head>
 
 <body id="body_main">
-<!--TIMERS-->
-<div id="timer" style="display: none;">
-    Timer WS:
-    <font size="4" color="#1D50AB"><span id="timer_ws">0</span></font>
-    Timer CODE:
-    <font size="4" color="#1D50AB"><span id="timer_code">0</span></font>
-    RUN btn:
-    <font size="4" color="#1D50AB"><span id="run_btn">0</span></font>
-    Generate CODE:
-    <font size="4" color="#1D50AB"><span id="generate_btn">0</span></font>
-    Timer BAALL:
-    <font size="4" color="#1D50AB"><span id="timer_baall">0</span></font>
-    Timer Design BAALL:
-    <font size="4" color="#1D50AB"><span id="timer_design">0</span></font>
-    <textarea id="expTimer_txt"></textarea>
-    <!--example timer-->
-    <textarea id="totalTimer_txt"></textarea>
-    <!--total timer - until they close and open the tool again-->
-</div>
 
 <?php
 $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
@@ -76,20 +40,19 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
             <h1 style="float:left; display:inline;">
                 <img src="../media/beesm.png" alt="Smiley face" height="42" width="100">
             </h1>
-            <button class="btn_lan" id="english" onclick="#" style="float:right;">en</button>
+            <div id="timer_display" style="float:right; visibility:hidden;">600</div>
         </div>
         <div id="rightHeader">
-            <button class="btn_task" id="Task03" onclick="" style="float:left; display: none; visibility:hidden;">Task 3</button>
-            <button class="btn_task" id="Task02" onclick="" style="float:left; display: none; visibility:hidden;">Task 2</button>
-            <button class="btn_task" id="Task01" onclick="" style="float:left; display: none; visibility:hidden;">Task 1</button>
-            <span id="no_task" style="float:left; padding: 5px; display: none;"></span>
+            <button class="btn_task" id="Task1" onclick="startTask(1)" style="float:left;">Start Task 1</button>
+            <button class="btn_task" id="Task2" onclick="startTask(2)" style="float:left;">Start Task 2</button>
+            <button class="btn_task" id="Task3" onclick="startTask(3)" style="float:left;">Start Task 3</button>
+            <button class="btn_task" id="TaskEnd" onclick="endTask()" style="float:left;">End Task</button>
             <!----------->
             <button class="btn_tabs" id="tb3" onclick="location.href='index-ros-en.php';" style="float:right;">TurtleBot 3</button>
             <button class="btn_tabs" id="ardu" onclick="#" style="float:right;" disabled>Arduino</button>
         </div>
     </div>
     <!----------->
-    <!--TIMERS-->
     <!----------->
     <div id="leftDiv">
         <!--this is too design the Blockly workspace-->
@@ -133,7 +96,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
     <div id="rightDiv">
         <div class="codeBtn">
             <button class="btn" id="run" onclick="runCode();uploadClick();">Upload Code</button>
-            <button class="btn" id="generate" onclick="generateCode(); generate();">Generate Code</button>
+            <button class="btn" id="generate" onclick="generateCode();">Generate Code</button>
             <button class="btn" id="modify" onclick="">Code Modifier</button>
             <button class="btn" id="auto" onclick="autoCode()">AutoCode Generator</button>
             <button class="btn" id="reset" onclick="resetClick()" style="float:right;">Reset</button>

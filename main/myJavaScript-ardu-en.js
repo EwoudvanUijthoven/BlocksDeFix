@@ -181,11 +181,7 @@ reColor(Blockly.Blocks['raspy_ardu_write'], robot_color);
 //--------------------------------
 //field of programming
 document.getElementById("ardu").style.background = "rgb(27, 94, 32)";
-document.getElementById("english").style.background = "rgb(27, 94, 32)";
 //--------------------------------
-function consoleLog(msg){
-    console.log(msg);
-}
 //--------------------------------
 //Autocode generate flag
 var currentValue = document.getElementById("auto").value = "Off";
@@ -432,11 +428,11 @@ function WebSocketArdu() {
 
         websocket.onmessage = function (evt) {
             var received_msg = evt.data;
-            consoleLog("Ardu-Data recieved...");
-            consoleLog(received_msg);
+            console.log("Ardu-Data recieved...");
+            console.log(received_msg);
             var obj = JSON.parse(received_msg);
             if (obj.type === "outputMsg") {
-                consoleLog("new Arduino msg recieved!");
+                console.log("new Arduino msg recieved!");
                 arduMsg = obj.value;
                 serialMonitor(arduMsg);
             }
@@ -456,12 +452,12 @@ function WebSocketArdu() {
 
         websocket.onclose = function() {
             // websocket is closed
-            consoleLog("Ardu-Connection is closed...");
+            console.log("Ardu-Connection is closed...");
 	        setTimeout(function(){WebSocketArdu()}, 7000);
         };
 
         websocket.onerror   = function (evt) {
-            consoleLog('Ardu-Error occured: ' + evt.data);
+            console.log('Ardu-Error occured: ' + evt.data);
         };
 
         window.onbeforeunload = function(evt) {
@@ -470,12 +466,12 @@ function WebSocketArdu() {
 
     } else {
         // The browser doesn't support WebSocket
-        consoleLog("ROS-WebSocket NOT supported by your Browser!");
+        console.log("ROS-WebSocket NOT supported by your Browser!");
     }
 }
 //--------------------------------
 function serialMonitor(arduMsg){
-    consoleLog(arduMsg);
+    console.log(arduMsg);
     output.textContent = output.textContent + "" + arduMsg;
 }
 //--------------------------------
@@ -484,7 +480,10 @@ function refreshOutputArdu() {
     document.getElementById("output").innerText = "";
 }
 //--------------------------------
+var run_code_clicks = 0;
+
 function uploadCode(code, callback) {
+    ++run_code_clicks;
     refreshOutputArdu();
     var target = document.getElementById('content_arduino');
     var spinner = new Spinner().spin(target);
@@ -668,4 +667,134 @@ function remoteSaveXML(code, name) {
         }
     }
     xhr.send(code);
+}
+
+/**
+ * Starts a task by loading the corresponding XML file.
+ *
+ * @param {number} task_nr - The task number to start.
+ *                           Valid values are 1, 2, or 3.
+ *                           Each number corresponds to a specific task XML file.
+ *
+ * @throws {Error} If the task number is not valid.
+ */
+function startTask(task_nr) {
+    taskFlag = task_nr;
+    if (task_nr === 1) {
+        startTimer(600);
+        loadXML_from_files("tasks_xml/task1.xml");
+    } else if (task_nr === 2) {
+        startTimer(600);
+        loadXML_from_files("tasks_xml/task2.xml");
+    } else if (task_nr === 3) {
+        startTimer(600);
+        loadXML_from_files("tasks_xml/task3.xml");
+    } else {
+        alert("Task number not found!");
+        throw new Error("Task number not found!");
+    }
+}
+
+/**
+ * Ends the current task and logs the task number.
+ *
+ * @throws {Error} If no task is currently active.
+ */
+function endTask() {
+    if (taskFlag === undefined) {
+        alert("No task is currently active.");
+        throw new Error("No task is currently active.");
+    }
+    stopTimer();
+    let log_text = "Task " + taskFlag.toString() + "," + elapsedTime.toString() + "," + run_code_clicks.toString();
+    logToFile(log_text)
+    console.log("End task:", taskFlag);
+    taskFlag = undefined;
+}
+
+var intervalId;
+var elapsedTime = 0;
+
+/**
+ * Starts a timer with a specified time limit.
+ * The timer counts down from the given time limit and updates the display every second.
+ * When the time is up, an alert is shown and the timer stops.
+ *
+ * @param {number} time_limit - The time limit in seconds for the timer.
+ */
+function startTimer(time_limit) {
+    clearInterval(intervalId); // Clear any existing timer
+    document.getElementById('timer_display').style.visibility = 'visible';
+    intervalId = setInterval(function() {
+        elapsedTime++;
+        let time_left = time_limit - elapsedTime;
+        document.getElementById('timer_display').innerHTML = time_left.toString();
+        if (elapsedTime >= time_limit) {
+            alert("Time is up!");
+            stopTimer();
+        }
+    }, 1000);
+}
+
+/**
+ * Stops the currently running timer and hides the timer display.
+ * Clears the interval to stop the timer from updating.
+ */
+function stopTimer() {
+    clearInterval(intervalId);
+    document.getElementById('timer_display').style.visibility = 'hidden';
+}
+
+/**
+ * Logs the provided text to a file on the server.
+ * Sends the log text to the server using an XMLHttpRequest.
+ *
+ * @param {string} log - The log text to be saved.
+ */
+function logToFile(log) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "logFile.php?task="+taskFlag, true);
+    xhr.send(log);
+}
+
+/**
+ * Returns the xml code on the workspace.
+ *
+ * @param file_path
+ */
+function loadXML_from_files(file_path) {
+    var fileToLoad = file_path;
+
+    var fileReader = new XMLHttpRequest();
+    fileReader.onload = function() {
+        if (fileReader.readyState === 4 && fileReader.status === 200) {
+            var textFromFileLoaded = fileReader.responseText;
+            document.getElementById("xmlCode").value = textFromFileLoaded;
+        }
+    };
+    fileReader.open("GET", fileToLoad, true);
+    fileReader.send();
+
+    setTimeout(
+        function() {
+            var toload = $('#xmlCode').val();
+            var success = load(toload);
+
+            function load(xml) {
+                if (typeof xml != "string" || xml.length < 5) {
+                    alert("No Input!");
+                    return false;
+                    return;
+                }
+                try {
+                    var dom = Blockly.Xml.textToDom(xml);
+                    Blockly.mainWorkspace.clear();
+                    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
+                    return true;
+                } catch (e) {
+                    alert("Invalid xml!");
+                    return false;
+                }
+            }
+        }, 50);
 }
