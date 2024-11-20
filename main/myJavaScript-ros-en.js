@@ -136,6 +136,8 @@ function consoleLog(msg){
 //Autocode generate flag
 var currentValue = document.getElementById("auto").value = "Off";
 
+var taskFlag;
+
 function autoCode() {
     currentValue = document.getElementById('auto').value;
     if (currentValue == "Off") {
@@ -696,4 +698,78 @@ function remoteSaveTimer(code) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "saveTime.php?task="+getTask()+"&area="+work_area, true);
     xhr.send(code);
+}
+
+/**
+ * Starts a task by loading the corresponding XML file.
+ *
+ * @param {number} task_nr - The task number to start.
+ *                           Valid values are 1, 2, or 3.
+ *                           Each number corresponds to a specific task XML file.
+ *
+ * @throws {Error} If the task number is not valid.
+ */
+function startTask(task_nr) {
+    taskFlag = task_nr;
+    if (task_nr === 1) {
+        loadXML_from_files("tasks_xml/task1.xml");
+    } else if (task_nr === 2) {
+        loadXML_from_files("tasks_xml/task2.xml");
+    } else if (task_nr === 3) {
+        loadXML_from_files("tasks_xml/task3.xml");
+    } else {
+        alert("Task number not found!");
+        throw new Error("Task number not found!");
+    }
+}
+
+/**
+ * Ends the current task and logs the task number.
+ *
+ * @throws {Error} If no task is currently active.
+ */
+function endTask() {
+    if (taskFlag === undefined) {
+        alert("No task is currently active.");
+        throw new Error("No task is currently active.");
+    }
+    console.log("End task:", taskFlag);
+    taskFlag = undefined;
+}
+
+function loadXML_from_files(file_path) {
+    var fileToLoad = file_path;
+
+    var fileReader = new XMLHttpRequest();
+    fileReader.onload = function() {
+        if (fileReader.readyState === 4 && fileReader.status === 200) {
+            var textFromFileLoaded = fileReader.responseText;
+            document.getElementById("xmlCode").value = textFromFileLoaded;
+        }
+    };
+    fileReader.open("GET", fileToLoad, true);
+    fileReader.send();
+
+    setTimeout(
+        function() {
+            var toload = $('#xmlCode').val();
+            var success = load(toload);
+
+            function load(xml) {
+                if (typeof xml != "string" || xml.length < 5) {
+                    alert("No Input!");
+                    return false;
+                    return;
+                }
+                try {
+                    var dom = Blockly.Xml.textToDom(xml);
+                    Blockly.mainWorkspace.clear();
+                    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
+                    return true;
+                } catch (e) {
+                    alert("Invalid xml!");
+                    return false;
+                }
+            }
+        }, 50);
 }
