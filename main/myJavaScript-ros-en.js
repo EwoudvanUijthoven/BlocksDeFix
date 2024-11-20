@@ -733,8 +733,16 @@ function endTask() {
         alert("No task is currently active.");
         throw new Error("No task is currently active.");
     }
+    let log_text = "Task " + taskFlag.toString() + "," + "start_time_placeholder," + "end_time_placeholder," + "number_of_tries_placeholder";
+    logToFile(log_text)
     console.log("End task:", taskFlag);
     taskFlag = undefined;
+}
+
+function logToFile(log) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "logFile.php?task="+taskFlag, true);
+    xhr.send(log);
 }
 
 function loadXML_from_files(file_path) {
