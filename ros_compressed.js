@@ -83,6 +83,16 @@ Blockly.PHP['loop_controller'] = function(block) {
     return code;
 };
 
+Blockly.Python['loop_controller'] = function(block) {
+    var dropdown_cntrol = block.getFieldValue('cntrol');
+    if (dropdown_cntrol == "break") {
+        var code = "break\n";
+    } else if (dropdown_cntrol == "continue") {
+        var code = "continue\n";
+    }
+    return code;
+}
+
 Blockly.PHP['foreach_simple'] = function(block) {
     var branch = Blockly.PHP.statementToCode(block, 'DO');
     branch = Blockly.PHP.addLoopTrap(branch, block.id);
@@ -116,6 +126,13 @@ Blockly.PHP['sleep_time'] = function(block) {
     var code = 'sleep(' + value_sleep + ');\n';
     return code;
 };
+
+Blockly.Python['sleep_time'] = function(block) {
+    Blockly.Python.definitions_['time'] = 'import time';
+    var value_sleep = Blockly.Python.valueToCode(block, 'sleep', Blockly.Python.ORDER_ATOMIC) || '0';
+    var code = 'time.sleep(' + value_sleep + ')\n';
+    return code;
+}
 
 Blockly.PHP['repeat_list'] = function(block) {
     var value_item = Blockly.PHP.valueToCode(block, 'item', Blockly.PHP.ORDER_ATOMIC) || "null";
