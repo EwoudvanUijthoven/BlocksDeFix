@@ -1,4 +1,20 @@
-//change the Block colors
+/**
+ * @file main/myJavaScript-ros-en.js
+ * @description This file contains JavaScript code for integrating Blockly with ROS (Robot Operating System).
+ * It includes functions for changing Blockly block colors, handling WebSocket communication with ROS,
+ * generating and running ROS code, and managing Blockly workspace operations.
+ *
+ * @dependencies Blockly, jQuery, hljs
+ * @author [Ewoud van Uijthoven, Mazyar Seraj]
+ * @version 1.0
+ * @date [2024-11-20]
+ */
+
+/**
+ * Changes the color of a Blockly block.
+ * @param {Object} block - The Blockly block to change the color of.
+ * @param {string} hue - The color to set for the block.
+ */
 function reColor(block, hue) {
     var oldInit = block.init;
     block.init = function() {
