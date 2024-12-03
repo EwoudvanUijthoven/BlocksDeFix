@@ -93,14 +93,6 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
             <!--code style left-->
         </div>
         <!--left DIV-->
-        <!----------->
-        <div class="codeStyleLeft">
-            <div id="loader" style="display: none; position: absolute; left: 100px;"></div>
-            <h4>Output</h4><br>
-            <div id="output-wrapper">
-                <div id="output"></div>
-            </div>
-        </div>
     </div>
     <!----------->
     <div id="rightDiv">
@@ -138,7 +130,14 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
                     </td>
                 </tr>
             </table>
-        </div>
+            </div>
+            <div class="codeStyleLeft">
+                <div id="loader" style="display: none; position: absolute; left: 100px;"></div>
+                <h4>Output</h4><br>
+                <div id="output-wrapper">
+                    <div id="output"></div>
+                </div>
+            </div>
         <!----------->
 </div>
 <!--end div main-->
