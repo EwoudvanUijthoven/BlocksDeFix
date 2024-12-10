@@ -1,6 +1,6 @@
 def movebot_second(direction, second, speed):
     rate = rospy.Rate(10)
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     start = time.time()
     flag = True
 
@@ -31,7 +31,7 @@ def movebot_second(direction, second, speed):
         velocity_pub.publish(twist)
         rate.sleep()
 
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     velocity_pub.publish(twist)
     rate.sleep()
     return 'Second Movement Data Sent!'

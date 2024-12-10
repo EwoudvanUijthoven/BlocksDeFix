@@ -17,7 +17,7 @@ import tf
 import numpy
 import geometry_msgs.msg
 import json
-import subprocess
+import traceback
 from math import *
 from std_msgs.msg import String, Empty
 from geometry_msgs.msg import Pose2D, PoseStamped, Point, Pose, Quaternion, Twist, Vector3, PoseWithCovarianceStamped, PoseWithCovariance, TransformStamped, Transform
@@ -1960,17 +1960,17 @@ class block_ros_code(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def run_generated_code(self):
-        import subprocess
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         # Read the body of the request as raw text
         body = cherrypy.request.body.read().decode('utf-8')
-        # Save the code to a file and execute it
-        with open('temp_code.py', 'w') as f:
-            f.write(body)
-
-        # Run the Python code using subprocess
-        result = subprocess.run(['python3', 'temp_code.py'], capture_output=True, text=True)
-        msg = {"success": result.returncode == 0, "output": result.stdout, "error": result.stderr, "status": result.returncode}
+        # Compile the code with a custom filename
+        code = compile(body, 'temp_code.py', 'exec')
+        local_vars = {}
+        try:
+            exec(code, globals(), local_vars)
+        except Exception as e:
+            return {"success": False, "output": str(e), "error": str(traceback.format_exc()), "status": 1}
+        msg = {"success": True, "output": "", "error": "", "status": 0}
         return msg
 ###################################################
 ###################################################

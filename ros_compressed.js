@@ -42,9 +42,7 @@ Blockly.readPythonFile = function(file) {
 function ros_python_initialization (code) {
     if (!window.PythonConfig.ros_initialized) {
         Blockly.Python.definitions_['rospy'] = 'import rospy';
-        Blockly.Python.definitions_['geometry_msgs'] = 'import geometry_msgs.msg as geometry_msgs';
-        code += Blockly.readPythonFile("../generators/python/scripts/turtlebot3/python_initialization.py");
-        code += "\n\n";
+        Blockly.Python.definitions_['geometry_msgs'] = 'import geometry_msgs';
         window.PythonConfig.ros_initialized = true;
     }
     return code
