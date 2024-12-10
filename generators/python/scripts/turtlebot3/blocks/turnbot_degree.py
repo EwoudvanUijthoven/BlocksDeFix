@@ -1,5 +1,5 @@
 def turnbot_degree(clockwise, degreeAngle, speed):
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
 
     listener = tf.TransformListener()
 
@@ -82,7 +82,7 @@ def turnbot_degree(clockwise, degreeAngle, speed):
         velocity_pub.publish(twist)
         rate.sleep()
 
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     twist.angular.z = 0.00
     velocity_pub.publish(twist)
     rate.sleep()

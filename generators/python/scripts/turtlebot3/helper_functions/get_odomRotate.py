@@ -5,5 +5,5 @@ def get_odomRotate(tf_listener, odom_frame, base_frame):
         rospy.loginfo("TF Exception")
         return
 
-    return (quat_to_angle(geometry_msgs.Quaternion(*rot)))
+    return (quat_to_angle(geometry_msgs.msg.Quaternion(*rot)))
 

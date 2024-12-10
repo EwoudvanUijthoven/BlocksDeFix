@@ -1,6 +1,6 @@
 def stop_robot():
     rate = rospy.Rate(10)
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     start = time.time()
     flag = True
 
@@ -17,7 +17,7 @@ def stop_robot():
             flag = False
             break
         velocity_pub.publish(twist)
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     velocity_pub.publish(twist)
     rate.sleep()
 

@@ -1,5 +1,5 @@
 def movebot_distance(direction, distance, speed):
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
 
     listener = tf.TransformListener()
 
@@ -40,6 +40,7 @@ def movebot_distance(direction, distance, speed):
         except (tf.Exception, tf.ConnectivityException, tf.LookupException):
             rospy.loginfo("Cannot find transform between /odom and /base_link or /base_footprint")
             rospy.signal_shutdown("tf Exception")
+            return "no base_frame"
 
     position = get_odom(listener, odom_frame, base_frame)
     x_start = position.x
@@ -66,7 +67,7 @@ def movebot_distance(direction, distance, speed):
         velocity_pub.publish(twist)
         rate.sleep()
 
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     twist.linear.x = 0
     velocity_pub.publish(twist)
     rate.sleep()
