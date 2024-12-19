@@ -1960,17 +1960,53 @@ class block_ros_code(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def run_generated_code(self):
+        import os
+        import linecache
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-        # Read the body of the request as raw text
+
+        # Read the body and save it to a temporary file
         body = cherrypy.request.body.read().decode('utf-8')
-        # Compile the code with a custom filename
-        code = compile(body, 'temp_code.py', 'exec')
+        temp_filename = "temp_code.py"
+
+        # Write the code to a file to ensure linecache can access it
+        with open(temp_filename, "w") as f:
+            f.write(body)
+
+        code = compile(body, temp_filename, 'exec')
         local_vars = {}
+
         try:
             exec(code, globals(), local_vars)
         except Exception as e:
-            return {"success": False, "output": str(e), "error": str(traceback.format_exc()), "status": 1}
+            tb = traceback.extract_tb(e.__traceback__)  # Extract the traceback details
+
+            # Start building the cleaned traceback
+            filtered_tb = ["Traceback (most recent call last):"]
+
+            for frame in tb:
+                if frame.filename == temp_filename:
+                    # Fetch the offending line using linecache
+                    offending_line = linecache.getline(frame.filename, frame.lineno).strip()
+                    filtered_tb.append(
+                        f'  File "{frame.filename}", line {frame.lineno}, in {frame.name}'
+                    )
+                    if offending_line:
+                        filtered_tb.append(f"    {offending_line}")
+
+            # Add the final exception type and message
+            filtered_tb.append(f"{type(e).__name__}: {e}")
+
+            # Combine and return the cleaned traceback
+            cleaned_tb = "\n".join(filtered_tb)
+
+            # Clean up the temporary file
+            os.remove(temp_filename)
+            return {"success": False, "output": "", "error": cleaned_tb, "status": 1}
+
         msg = {"success": True, "output": "", "error": "", "status": 0}
+
+        # Remove the temporary file after execution
+        os.remove(temp_filename)
         return msg
 ###################################################
 ###################################################
