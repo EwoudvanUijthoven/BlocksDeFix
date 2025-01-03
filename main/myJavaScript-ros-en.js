@@ -110,18 +110,6 @@ reColor(Blockly.Blocks['stop_bot'], FreeNavigation_color);
 reColor(Blockly.Blocks['scanner_data'], FreeNavigation_color);
 reColor(Blockly.Blocks['scanner_data_range'], FreeNavigation_color);
 
-reColor(Blockly.Blocks['initialization_pose'], MapNavigation_color);
-reColor(Blockly.Blocks['connect_server_ros'], MapNavigation_color);
-reColor(Blockly.Blocks['start_position'], MapNavigation_color);
-reColor(Blockly.Blocks['pose_change'], MapNavigation_color);
-reColor(Blockly.Blocks['get_location'], MapNavigation_color);
-reColor(Blockly.Blocks['movebot_link'], MapNavigation_color);
-reColor(Blockly.Blocks['turnbot_link'], MapNavigation_color);
-reColor(Blockly.Blocks['movebot_location'], MapNavigation_color);
-reColor(Blockly.Blocks['movebot_position'], MapNavigation_color);
-reColor(Blockly.Blocks['sleep_robot'], MapNavigation_color);
-reColor(Blockly.Blocks['stopbot_map'], MapNavigation_color);
-
 reColor(Blockly.Blocks['raspy_arduino_write'], Arduino_color);
 reColor(Blockly.Blocks['raspy_arduino_read'], Arduino_color);
 //--------------------------------
