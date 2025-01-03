@@ -250,11 +250,7 @@ def sendDataJson():
 #copy the range and intensities of "/scan" topic to "ranges_filter" and "intensities_filter"
 #you need to convert them to "list" as "data.ranges" and "data.intensities" are "tuple"
 def callback_scan(data):
-    global ranges_filter, intensities_filter, lastSend, ranges_scanner_total, intensities_scanner_total
-
-    len(data.ranges)
-    len(data.intensities)
-
+    global lastSend, ranges_scanner_total, intensities_scanner_total
     #convert them to list
     ranges_filter = list(copy.copy(data.ranges))
     intensities_filter = list(copy.copy(data.intensities))
@@ -262,20 +258,25 @@ def callback_scan(data):
     ranges_scanner_total = list(copy.copy(data.ranges))
     intensities_scanner_total = list(copy.copy(data.intensities))
 
+
+    try:
     #filtering those angles that I do not want them (based on the question)
-    for x in range(40, 135):  #45, 135
-        ranges_filter[x] = 0
-        intensities_filter[x] = 0
-        
-    for y in range(220, 315):   #225, 315
-        ranges_filter[y] = 0
-        intensities_filter[y] = 0
+        for x in range(45, 135):  #45, 135
+            ranges_filter[x] = 0
+            intensities_filter[x] = 0
+
+        for y in range(225, 315):   #225, 315
+            ranges_filter[y] = 0
+            intensities_filter[y] = 0
+    except:
+        pass
 
     endTime = int(round(time.time() * 1000)) - lastSend
     if endTime > 1000:
         sendLaserScanner()
         sendDataJson()
         lastSend = int(round(time.time() * 1000))
+
 ###################################################
 #Change 3D Scanner Data
 def filter_scanner():
@@ -344,37 +345,38 @@ def get_odomRotate(tf_listener, odom_frame, base_frame):
 ###################################################
 ################SAFE MOVEMENT######################
 ###################################################
-def safeMovement(range1, range2, distance, direction):
-    global ranges_scanner_safe, ranges_scanner_total, scanBoolean_safe
-    ranges_scanner_safe = []
-    scanBoolean_safe = False
-
-    if (direction == 1):
-        ranges_scanner_safe = []
-        for x in range(range1, 359):
-            ranges_scanner_safe.append(ranges_scanner_total[x])
-        for y in range(0, range2):
-            ranges_scanner_safe.append(ranges_scanner_total[y])
-        for i in range(0, len(ranges_scanner_safe)):
-            if ranges_scanner_safe[i] <= distance and ranges_scanner_safe[i] != 0:
-                rospy.loginfo(str(ranges_scanner_safe[i]))
-                rospy.loginfo("*****There is a block near to you!*****")
-                scanBoolean_safe = True
-                flag = False
-                break
-
-    if (direction == 0):
-        ranges_scanner_safe = []
-        for x in range(range1, range2):
-            ranges_scanner_safe.append(ranges_scanner_total[x])
-        for i in range(0, len(ranges_scanner_safe)):
-            if ranges_scanner_safe[i] <= distance and ranges_scanner_safe[i] != 0:
-                rospy.loginfo(str(ranges_scanner_safe[i]))
-                rospy.loginfo("*****I detected an obstacle!*****")
-                scanBoolean_safe = True
-                break
-
-    return scanBoolean_safe
+# def safeMovement(range1, range2, distance, direction):
+#     global ranges_scanner_safe, ranges_scanner_total, scanBoolean_safe
+#     ranges_scanner_safe = []
+#     scanBoolean_safe = False
+#     rospy.loginfo(f"{range1}, {range2}, {distance}, {direction}")
+#
+#     if (direction == 1):
+#         ranges_scanner_safe = []
+#         for x in range(range1, 359):
+#             ranges_scanner_safe.append(ranges_scanner_total[x])
+#         for y in range(0, range2):
+#             ranges_scanner_safe.append(ranges_scanner_total[y])
+#         for i in range(0, len(ranges_scanner_safe)):
+#             if ranges_scanner_safe[i] <= distance and ranges_scanner_safe[i] != 0:
+#                 rospy.loginfo(str(ranges_scanner_safe[i]))
+#                 rospy.loginfo("*****There is a block near to you!*****")
+#                 scanBoolean_safe = True
+#                 flag = False
+#                 break
+#
+#     if (direction == 0):
+#         ranges_scanner_safe = []
+#         for x in range(range1, range2):
+#             ranges_scanner_safe.append(ranges_scanner_total[x])
+#         for i in range(0, len(ranges_scanner_safe)):
+#             if ranges_scanner_safe[i] <= distance and ranges_scanner_safe[i] != 0:
+#                 rospy.loginfo(str(ranges_scanner_safe[i]))
+#                 rospy.loginfo("*****I detected an obstacle!*****")
+#                 scanBoolean_safe = True
+#                 break
+#
+#     return scanBoolean_safe
 
 ############################################################################
 ########################### EXPOSE FUNCTIONS ###############################
@@ -1158,234 +1160,234 @@ class block_ros_code(object):
 ###############SAFE MOVEMENT SECOND################
 ###################################################
 # moving forward for X second forward and backward
-    @cherrypy.expose
-    def safeMovebot_second(self, direction=0, second=0, speed=0):  # not more than 20 second
-        global stop_robots
-        global scanBoolean_safe
-        global ranges_scanner, ranges_scanner_total
-
-        turnFlag = 0
-        turnDegree = 0
-
-        rate = rospy.Rate(10)  # 10Hz
-        twist = Twist()
-        start = time.time()
-        flag = True  # time flag
-        speed = np.float64(speed)
-        second = np.float64(second)
-        direction = np.float64(direction)
-
-        twist.linear.z = 0.00
-
-        if second > 30:
-            second = 30
-
-        if speed == 0:
-            twist.linear.x = 0.00
-
-        if speed == 1 and direction == 1:
-            twist.linear.x = 0.05
-        elif speed == 2 and direction == 1:
-            twist.linear.x = 0.07
-        elif speed == 3 and direction == 1:
-            twist.linear.x = 0.10
-
-        if speed == 1 and direction == 0:
-            twist.linear.x = -0.05
-        elif speed == 2 and direction == 0:
-            twist.linear.x = -0.07
-        elif speed == 3 and direction == 0:
-            twist.linear.x = -0.10
-
-        fx_range = 345
-        fy_range = 15
-
-        bx_range = 165
-        by_range = 195
-
-        distance = 50
-
-        fx_range = int(fx_range)
-        fy_range = int(fy_range)
-
-        bx_range = int(bx_range)
-        by_range = int(by_range)
-
-        distance = float(distance)
-
-        distance = distance/100
-
-        ranges_scanner = list(ranges_scanner_total)
-        ranges_scanner_help = []
-        ###################################################
-        scanBoolean = False
-        while not rospy.is_shutdown() and flag and stop_robots:
-            sample_time = time.time()
-            if ((sample_time - start) > second):
-                flag = False
-                break
-            checkAgain = False
-            ###################################################
-            #when it is already rotated for one time
-            if(turnDegree != 0):
-                #moving forward
-                if (direction == 1):
-                    #moving to right
-                    if(turnFlag == 1):
-                        if(safeMovement(turnDegree-20, turnDegree+20, 0.5, 0) == False):
-                            self.turnbot_degree(0, turnDegree, 2)
-                            turnFlag = 0
-                            turnDegree = 0
-                        else:
-                            rospy.loginfo("*****there is still an obstacle to the left")
-                            checkAgain = True
-                    #moving to left
-                    else:
-                        if(safeMovement(360-turnDegree-20, 360-turnDegree+20, 0.5, 0) == False):
-                            self.turnbot_degree(1, turnDegree, 2)
-                            turnFlag = 0
-                            turnDegree = 0
-                        else:
-                            rospy.loginfo("*****there is still an obstacle to the right")
-                            checkAgain = True
-                #Moving backward
-                else:
-                    #moving to left
-                    if(turnFlag == 0):
-                        if(safeMovement(180-turnDegree-30, 180-turnDegree+20, 0.5, 0) == False):
-                            self.turnbot_degree(1, turnDegree, 2)
-                            turnFlag = 0
-                            turnDegree = 0
-                        else:
-                            rospy.loginfo("*****there is still an obstacle to the right")
-                            checkAgain = True
-                    #moving to right
-                    else:
-                        if(safeMovement(180+turnDegree-20, 180+turnDegree+20, 0.5, 0) == False):
-                            self.turnbot_degree(0, turnDegree, 2)
-                            turnFlag = 0
-                            turnDegree = 0
-                        else:
-                            rospy.loginfo("*****there is still an obstacle to the left")
-                            checkAgain = True
-            #####################Check scanner#################
-            #for the first time rotation
-            else:
-                #moving forward
-                if direction == 1:
-                    if(safeMovement(fx_range, fy_range, distance, direction) == True):
-                        rospy.loginfo("*****%There is a block near to you%!*****")
-                        if(safeMovement(16, 45, 0.6, 0) == True):
-                            rospy.loginfo("*****There is a block near to left01!*****")
-                            if(safeMovement(315, 344, 0.6, 0) == True):
-                                rospy.loginfo("*****There is a block near to right01!*****")
-                                if(safeMovement(46, 70, 0.6, 0) == True):
-                                    rospy.loginfo("*****There is a block near to left02!*****")
-                                    if(safeMovement(290, 314, 0.6, 0) == True):
-                                        rospy.loginfo("*****There is a block near to right02!*****")
-                                        if(safeMovement(71, 90, 0.6, 0) == True):
-                                            rospy.loginfo("*****There is a block near to left03!*****")
-                                            if(safeMovement(270, 289, 0.6, 0) == True):
-                                                rospy.loginfo("*****There is a block near to right03!*****")
-                                                flag = False
-                                                break
-                                            else: #right03
-                                                turnFlag = 1
-                                                turnDegree = 70
-                                                self.turnbot_degree(turnFlag, turnDegree, 2)
-                                        else: #left03
-                                            turnFlag = 0
-                                            turnDegree = 70
-                                            self.turnbot_degree(turnFlag, turnDegree, 2)
-                                    else: #right02
-                                        turnFlag = 1
-                                        turnDegree = 50
-                                        self.turnbot_degree(turnFlag, turnDegree, 2)
-                                else: #left02
-                                    turnFlag = 0
-                                    turnDegree = 50
-                                    self.turnbot_degree(turnFlag, turnDegree, 2)
-                            else: #right01
-                                turnFlag = 1
-                                turnDegree = 30
-                                self.turnbot_degree(turnFlag, turnDegree, 2)
-                        else: #left01
-                            turnFlag = 0
-                            turnDegree = 30
-                            self.turnbot_degree(turnFlag, turnDegree, 2)
-                    else:
-                        rospy.loginfo("There is NO block near to you!")
-
-                        scanBoolean = False
-                ###################################################
-                #moving backward
-                elif direction == 0:
-                    if(safeMovement(bx_range, by_range, distance, direction) == True):
-                        rospy.loginfo("*****%There is a block near to you%!*****")
-                        if(safeMovement(135, 165, 0.6, 0) == True):
-                            rospy.loginfo("*****There is a block near to left01!*****")
-                            if(safeMovement(196, 225, 0.6, 0) == True):
-                                rospy.loginfo("*****There is a block near to right01!*****")
-                                if(safeMovement(110, 134, 0.6, 0) == True):
-                                    rospy.loginfo("*****There is a block near to left02!*****")
-                                    if(safeMovement(226, 250, 0.6, 0) == True):
-                                        rospy.loginfo("*****There is a block near to right02!*****")
-                                        if(safeMovement(90, 109, 0.6, 0) == True):
-                                            rospy.loginfo("*****There is a block near to left03!*****")
-                                            if(safeMovement(251, 270, 0.6, 0) == True):
-                                                rospy.loginfo("*****There is a block near to right03!*****")
-                                                scanBoolean = True
-                                                flag = False
-                                                break
-                                            else: #right03
-                                                turnFlag = 0
-                                                turnDegree = 70
-                                                self.turnbot_degree(turnFlag, turnDegree, 2)
-                                        else: #left03
-                                            turnFlag = 1
-                                            turnDegree = 70
-                                            self.turnbot_degree(turnFlag, turnDegree, 2)
-                                    else: #right02
-                                        turnFlag = 0
-                                        turnDegree = 50
-                                        self.turnbot_degree(turnFlag, turnDegree, 2)
-                                else: #left02
-                                    turnFlag = 1
-                                    turnDegree = 50
-                                    self.turnbot_degree(turnFlag, turnDegree, 2)
-                            else: #right01
-                                turnFlag = 0
-                                turnDegree = 30
-                                self.turnbot_degree(turnFlag, turnDegree, 2)
-                        else: #left01
-                            turnFlag = 1
-                            turnDegree = 30
-                            self.turnbot_degree(turnFlag, turnDegree, 2)
-                    else:
-                        rospy.loginfo("There is NO block near to you!")
-
-                    scanBoolean = False
-            #if there is an obtacle in the direction that robot want to routate back to, it needs to check an obstacle in front
-            #if it is, robot stop moving
-            if (checkAgain):
-                if (direction == 1):
-                    if(safeMovement(fx_range, fy_range, distance, direction) == True):
-                        rospy.loginfo("*****%There is a block near to you%! - I am breaking!!!*****")
-                        flag = False
-                        break
-                else:
-                    if(safeMovement(bx_range, by_range, distance, direction) == True):
-                        rospy.loginfo("*****%There is a block near to you%! - I am Breaking!!!*****")
-                        flag = False
-                        break
-            ###########################################
-            velocity_pub.publish(twist)
-            rate.sleep()
-
-        twist = Twist()
-        velocity_pub.publish(twist)
-        rate.sleep()
-        return 'Second Movement Data Sent!'
+#     @cherrypy.expose
+#     def safeMovebot_second(self, direction=0, second=0, speed=0):  # not more than 20 second
+#         global stop_robots
+#         global scanBoolean_safe
+#         global ranges_scanner, ranges_scanner_total
+#
+#         turnFlag = 0
+#         turnDegree = 0
+#
+#         rate = rospy.Rate(10)  # 10Hz
+#         twist = Twist()
+#         start = time.time()
+#         flag = True  # time flag
+#         speed = np.float64(speed)
+#         second = np.float64(second)
+#         direction = np.float64(direction)
+#
+#         twist.linear.z = 0.00
+#
+#         if second > 30:
+#             second = 30
+#
+#         if speed == 0:
+#             twist.linear.x = 0.00
+#
+#         if speed == 1 and direction == 1:
+#             twist.linear.x = 0.05
+#         elif speed == 2 and direction == 1:
+#             twist.linear.x = 0.07
+#         elif speed == 3 and direction == 1:
+#             twist.linear.x = 0.10
+#
+#         if speed == 1 and direction == 0:
+#             twist.linear.x = -0.05
+#         elif speed == 2 and direction == 0:
+#             twist.linear.x = -0.07
+#         elif speed == 3 and direction == 0:
+#             twist.linear.x = -0.10
+#
+#         fx_range = 345
+#         fy_range = 15
+#
+#         bx_range = 165
+#         by_range = 195
+#
+#         distance = 50
+#
+#         fx_range = int(fx_range)
+#         fy_range = int(fy_range)
+#
+#         bx_range = int(bx_range)
+#         by_range = int(by_range)
+#
+#         distance = float(distance)
+#
+#         distance = distance/100
+#
+#         ranges_scanner = list(ranges_scanner_total)
+#         ranges_scanner_help = []
+#         ###################################################
+#         scanBoolean = False
+#         while not rospy.is_shutdown() and flag and stop_robots:
+#             sample_time = time.time()
+#             if ((sample_time - start) > second):
+#                 flag = False
+#                 break
+#             checkAgain = False
+#             ###################################################
+#             #when it is already rotated for one time
+#             if(turnDegree != 0):
+#                 #moving forward
+#                 if (direction == 1):
+#                     #moving to right
+#                     if(turnFlag == 1):
+#                         if(safeMovement(turnDegree-20, turnDegree+20, 0.5, 0) == False):
+#                             self.turnbot_degree(0, turnDegree, 2)
+#                             turnFlag = 0
+#                             turnDegree = 0
+#                         else:
+#                             rospy.loginfo("*****there is still an obstacle to the left")
+#                             checkAgain = True
+#                     #moving to left
+#                     else:
+#                         if(safeMovement(360-turnDegree-20, 360-turnDegree+20, 0.5, 0) == False):
+#                             self.turnbot_degree(1, turnDegree, 2)
+#                             turnFlag = 0
+#                             turnDegree = 0
+#                         else:
+#                             rospy.loginfo("*****there is still an obstacle to the right")
+#                             checkAgain = True
+#                 #Moving backward
+#                 else:
+#                     #moving to left
+#                     if(turnFlag == 0):
+#                         if(safeMovement(180-turnDegree-30, 180-turnDegree+20, 0.5, 0) == False):
+#                             self.turnbot_degree(1, turnDegree, 2)
+#                             turnFlag = 0
+#                             turnDegree = 0
+#                         else:
+#                             rospy.loginfo("*****there is still an obstacle to the right")
+#                             checkAgain = True
+#                     #moving to right
+#                     else:
+#                         if(safeMovement(180+turnDegree-20, 180+turnDegree+20, 0.5, 0) == False):
+#                             self.turnbot_degree(0, turnDegree, 2)
+#                             turnFlag = 0
+#                             turnDegree = 0
+#                         else:
+#                             rospy.loginfo("*****there is still an obstacle to the left")
+#                             checkAgain = True
+#             #####################Check scanner#################
+#             #for the first time rotation
+#             else:
+#                 #moving forward
+#                 if direction == 1:
+#                     if(safeMovement(fx_range, fy_range, distance, direction) == True):
+#                         rospy.loginfo("*****%There is a block near to you%!*****")
+#                         if(safeMovement(16, 45, 0.6, 0) == True):
+#                             rospy.loginfo("*****There is a block near to left01!*****")
+#                             if(safeMovement(315, 344, 0.6, 0) == True):
+#                                 rospy.loginfo("*****There is a block near to right01!*****")
+#                                 if(safeMovement(46, 70, 0.6, 0) == True):
+#                                     rospy.loginfo("*****There is a block near to left02!*****")
+#                                     if(safeMovement(290, 314, 0.6, 0) == True):
+#                                         rospy.loginfo("*****There is a block near to right02!*****")
+#                                         if(safeMovement(71, 90, 0.6, 0) == True):
+#                                             rospy.loginfo("*****There is a block near to left03!*****")
+#                                             if(safeMovement(270, 289, 0.6, 0) == True):
+#                                                 rospy.loginfo("*****There is a block near to right03!*****")
+#                                                 flag = False
+#                                                 break
+#                                             else: #right03
+#                                                 turnFlag = 1
+#                                                 turnDegree = 70
+#                                                 self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                         else: #left03
+#                                             turnFlag = 0
+#                                             turnDegree = 70
+#                                             self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                     else: #right02
+#                                         turnFlag = 1
+#                                         turnDegree = 50
+#                                         self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                 else: #left02
+#                                     turnFlag = 0
+#                                     turnDegree = 50
+#                                     self.turnbot_degree(turnFlag, turnDegree, 2)
+#                             else: #right01
+#                                 turnFlag = 1
+#                                 turnDegree = 30
+#                                 self.turnbot_degree(turnFlag, turnDegree, 2)
+#                         else: #left01
+#                             turnFlag = 0
+#                             turnDegree = 30
+#                             self.turnbot_degree(turnFlag, turnDegree, 2)
+#                     else:
+#                         rospy.loginfo("There is NO block near to you!")
+#
+#                         scanBoolean = False
+#                 ###################################################
+#                 #moving backward
+#                 elif direction == 0:
+#                     if(safeMovement(bx_range, by_range, distance, direction) == True):
+#                         rospy.loginfo("*****%There is a block near to you%!*****")
+#                         if(safeMovement(135, 165, 0.6, 0) == True):
+#                             rospy.loginfo("*****There is a block near to left01!*****")
+#                             if(safeMovement(196, 225, 0.6, 0) == True):
+#                                 rospy.loginfo("*****There is a block near to right01!*****")
+#                                 if(safeMovement(110, 134, 0.6, 0) == True):
+#                                     rospy.loginfo("*****There is a block near to left02!*****")
+#                                     if(safeMovement(226, 250, 0.6, 0) == True):
+#                                         rospy.loginfo("*****There is a block near to right02!*****")
+#                                         if(safeMovement(90, 109, 0.6, 0) == True):
+#                                             rospy.loginfo("*****There is a block near to left03!*****")
+#                                             if(safeMovement(251, 270, 0.6, 0) == True):
+#                                                 rospy.loginfo("*****There is a block near to right03!*****")
+#                                                 scanBoolean = True
+#                                                 flag = False
+#                                                 break
+#                                             else: #right03
+#                                                 turnFlag = 0
+#                                                 turnDegree = 70
+#                                                 self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                         else: #left03
+#                                             turnFlag = 1
+#                                             turnDegree = 70
+#                                             self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                     else: #right02
+#                                         turnFlag = 0
+#                                         turnDegree = 50
+#                                         self.turnbot_degree(turnFlag, turnDegree, 2)
+#                                 else: #left02
+#                                     turnFlag = 1
+#                                     turnDegree = 50
+#                                     self.turnbot_degree(turnFlag, turnDegree, 2)
+#                             else: #right01
+#                                 turnFlag = 0
+#                                 turnDegree = 30
+#                                 self.turnbot_degree(turnFlag, turnDegree, 2)
+#                         else: #left01
+#                             turnFlag = 1
+#                             turnDegree = 30
+#                             self.turnbot_degree(turnFlag, turnDegree, 2)
+#                     else:
+#                         rospy.loginfo("There is NO block near to you!")
+#
+#                     scanBoolean = False
+#             #if there is an obtacle in the direction that robot want to routate back to, it needs to check an obstacle in front
+#             #if it is, robot stop moving
+#             if (checkAgain):
+#                 if (direction == 1):
+#                     if(safeMovement(fx_range, fy_range, distance, direction) == True):
+#                         rospy.loginfo("*****%There is a block near to you%! - I am breaking!!!*****")
+#                         flag = False
+#                         break
+#                 else:
+#                     if(safeMovement(bx_range, by_range, distance, direction) == True):
+#                         rospy.loginfo("*****%There is a block near to you%! - I am Breaking!!!*****")
+#                         flag = False
+#                         break
+#             ###########################################
+#             velocity_pub.publish(twist)
+#             rate.sleep()
+#
+#         twist = Twist()
+#         velocity_pub.publish(twist)
+#         rate.sleep()
+#         return 'Second Movement Data Sent!'
 ###################################################
 ###################################################
 ###################################################
@@ -1961,53 +1963,49 @@ class block_ros_code(object):
     @cherrypy.tools.json_out()
     def run_generated_code(self):
         import os
+        import traceback
         import linecache
-        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
 
-        # Read the body and save it to a temporary file
+        cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
+        rospy.loginfo(f"{len(ranges_scanner_total)}")
+        # Read the code body and write it to a temporary file
         body = cherrypy.request.body.read().decode('utf-8')
         temp_filename = "temp_code.py"
 
-        # Write the code to a file to ensure linecache can access it
         with open(temp_filename, "w") as f:
             f.write(body)
 
-        code = compile(body, temp_filename, 'exec')
-        local_vars = {}
-
         try:
-            exec(code, globals(), local_vars)
+            # Compile the code
+            code = compile(body, temp_filename, 'exec')
+
+            # Step 1: Define functions and variables
+            exec(code, globals(), globals())  # Use globals() to define everything in the global scope
+
+            # Step 2: Call the main function explicitly
+            if 'safe_movebot_second' in globals():
+                result = globals()['safe_movebot_second']('Forward', 1, 'slow')
+                return {"success": True, "output": result, "error": "", "status": 0}
+            else:
+                return {"success": False, "output": "", "error": "'safe_movebot_second' not defined", "status": 1}
+
         except Exception as e:
-            tb = traceback.extract_tb(e.__traceback__)  # Extract the traceback details
-
-            # Start building the cleaned traceback
+            # Handle exceptions and format traceback
+            tb = traceback.extract_tb(e.__traceback__)
             filtered_tb = ["Traceback (most recent call last):"]
-
             for frame in tb:
                 if frame.filename == temp_filename:
-                    # Fetch the offending line using linecache
                     offending_line = linecache.getline(frame.filename, frame.lineno).strip()
-                    filtered_tb.append(
-                        f'  File "{frame.filename}", line {frame.lineno}, in {frame.name}'
-                    )
+                    filtered_tb.append(f'  File "{frame.filename}", line {frame.lineno}, in {frame.name}')
                     if offending_line:
                         filtered_tb.append(f"    {offending_line}")
-
-            # Add the final exception type and message
             filtered_tb.append(f"{type(e).__name__}: {e}")
-
-            # Combine and return the cleaned traceback
             cleaned_tb = "\n".join(filtered_tb)
-
-            # Clean up the temporary file
-            os.remove(temp_filename)
             return {"success": False, "output": "", "error": cleaned_tb, "status": 1}
 
-        msg = {"success": True, "output": "", "error": "", "status": 0}
-
-        # Remove the temporary file after execution
-        os.remove(temp_filename)
-        return msg
+        finally:
+            # Clean up the temporary file
+            os.remove(temp_filename)
 ###################################################
 ###################################################
 ###################################################

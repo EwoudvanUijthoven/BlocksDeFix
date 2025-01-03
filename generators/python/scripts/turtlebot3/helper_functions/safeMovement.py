@@ -1,6 +1,7 @@
 def safeMovement(range1, range2, distance, direction):
     ranges_scanner_safe = []
     scanBoolean_safe = False
+    rospy.loginfo(f"{range1}, {range2}, {distance}, {direction}")
 
     if direction == "Forward":
         for x in range(range1, 359):
