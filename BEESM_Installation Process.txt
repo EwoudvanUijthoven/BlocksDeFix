@@ -174,7 +174,42 @@ $ roslaunch turtlebot3_bringup turtlebot3_model.launch        on PC
 $ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=/opt/lampp/htdocs/blockly-share/media/BAALL/baall_08Sep2016.yaml     on PC
 $ rosrun rviz rviz -d `rospack find turtlebot3_navigation`/rviz/turtlebot3_nav.rviz       on PC
 
-all attributes are available in: http://localhost:8099/ 
+Setup ROS connection
+Find IP's using
+$ hostname -I
+For local IP
+$ sudo arp-scan --interface=wlp0s20f3 192.168.8.159/24
+For Turtlebot3 IP (after turning on)
+
+Edit bashrc file both local and turtlebot
+$ nano ~/.bashrc
+$ source ~/.bashrc
+
+Local
+$ export ROS_MASTER_URI=http://192.168.8.159:11311
+$ export ROS_HOSTNAME=192.168.8.159
+
+On Turtlebot
+$ export ROS_MASTER_URI=http://192.168.8.159:11311
+$ export ROS_HOSTNAME=192.168.8.72
+
+
+
+Bare minimum to run BEESM programs on turtlebot3
+$ roscore on Remote PC
+
+SSH into turtlebot with
+$ ssh ubuntu@192.168.8.72
+$ password: turtlebot
+$ roslaunch turtlebot3_bringup turtlebot3_robot.launch on Turtlebot
+
+$ cd /opt/lampp/htdocs/BEESM/       on PC
+$ python ros_web_server.py         on PC
+
+
+
+
+all attributes are available in: http://localhost:8099/
 #############################################################
 #############################################################
 #############################################################

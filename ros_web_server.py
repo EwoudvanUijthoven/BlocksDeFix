@@ -92,7 +92,7 @@ intensities_filter = [None]*359
 ranges_scanner = []
 intensities_scanner = []
 
-ranges_scanner_total = [None]*359
+ranges_scanner_total = None
 intensities_scanner_total = [None]*359
 
 ranges_scanner_boolean = False
@@ -214,9 +214,12 @@ lastSend = int(round(time.time() * 1000))
 
 def formatLaser(index):
     global ranges_filter
-    if (str(ranges_filter[index]) == "inf"):
-        ranges_filter[index] = 0
-    return ranges_filter[index]
+    try:
+        if (ranges_filter[index] is None):
+            ranges_filter[index] = 0
+        return ranges_filter[index]
+    except:
+        return 0
 ######################################
 '''def sendLaserScanner():
     msg = "["+str(formatLaser(0))
@@ -250,27 +253,45 @@ def sendDataJson():
 #copy the range and intensities of "/scan" topic to "ranges_filter" and "intensities_filter"
 #you need to convert them to "list" as "data.ranges" and "data.intensities" are "tuple"
 def callback_scan(data):
-    global lastSend, ranges_scanner_total, intensities_scanner_total
-    #convert them to list
+    global ranges_filter, intensities_filter, lastSend, ranges_scanner_total, intensities_scanner_total
+
+    # Get number of points
+    num_points = len(data.ranges)  # Should now be 221
+    angle_min = 0.019618           # Replace with actual value from /scan
+    angle_max = 6.276542           # Replace with actual value from /scan
+    angle_increment = (angle_max - angle_min) / (num_points - 1)
+
+    # Convert to lists
     ranges_filter = list(copy.copy(data.ranges))
-    intensities_filter = list(copy.copy(data.intensities))
-
     ranges_scanner_total = list(copy.copy(data.ranges))
-    intensities_scanner_total = list(copy.copy(data.intensities))
 
+    # Calculate indices for filtering angles
+    # Convert desired angles to indices
+    # start_angle_1 = 40  # Degrees
+    # end_angle_1 = 135   # Degrees
+    # start_angle_2 = 220 # Degrees
+    # end_angle_2 = 315   # Degrees
+    #
+    # start_index_1 = int((math.radians(start_angle_1) - angle_min) / angle_increment)
+    # end_index_1 = int((math.radians(end_angle_1) - angle_min) / angle_increment)
+    # start_index_2 = int((math.radians(start_angle_2) - angle_min) / angle_increment)
+    # end_index_2 = int((math.radians(end_angle_2) - angle_min) / angle_increment)
 
-    try:
-    #filtering those angles that I do not want them (based on the question)
-        for x in range(45, 135):  #45, 135
+    start_index_1 = 27
+    end_index_1 = 90
+    start_index_2 = 147
+    end_index_2 = 210
+
+    # Filtering
+    for x in range(start_index_1, end_index_1 + 1):
+        if 0 <= x < num_points:
             ranges_filter[x] = 0
-            intensities_filter[x] = 0
 
-        for y in range(225, 315):   #225, 315
+    for y in range(start_index_2, end_index_2 + 1):
+        if 0 <= y < num_points:
             ranges_filter[y] = 0
-            intensities_filter[y] = 0
-    except:
-        pass
 
+    # Check time and send data
     endTime = int(round(time.time() * 1000)) - lastSend
     if endTime > 1000:
         sendLaserScanner()
@@ -281,7 +302,7 @@ def callback_scan(data):
 #Change 3D Scanner Data
 def filter_scanner():
     #it is based on the type of laser scanner (length of data.ranges)
-    num_readings = 359
+    num_readings = len(ranges_filter)
     laser_frequency = 40
 
     count = 0
@@ -1962,50 +1983,71 @@ class block_ros_code(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def run_generated_code(self):
+        import subprocess
+        import cherrypy
         import os
-        import traceback
-        import linecache
+        import json
 
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
-        rospy.loginfo(f"{len(ranges_scanner_total)}")
-        # Read the code body and write it to a temporary file
+
+        # Read the body of the request as raw text
         body = cherrypy.request.body.read().decode('utf-8')
-        temp_filename = "temp_code.py"
 
-        with open(temp_filename, "w") as f:
-            f.write(body)
+        # Serialize necessary global variables into a JSON file
+        globals_to_pass = {
+            "ranges_scanner_total": ranges_scanner_total
+        }
+        with open('globals.json', 'w') as f:
+            json.dump(globals_to_pass, f)
 
-        try:
-            # Compile the code
-            code = compile(body, temp_filename, 'exec')
+        # Path to the current script
+        current_file_path = os.path.abspath(__file__)
 
-            # Step 1: Define functions and variables
-            exec(code, globals(), globals())  # Use globals() to define everything in the global scope
+        # Generate the Python code for the subprocess
+        with open('temp_code.py', 'w') as f:
+            f.write(f"""\
+import rospy
+import json
+from geometry_msgs.msg import Twist
+import sys
+import os
 
-            # Step 2: Call the main function explicitly
-            if 'safe_movebot_second' in globals():
-                result = globals()['safe_movebot_second']('Forward', 1, 'slow')
-                return {"success": True, "output": result, "error": "", "status": 0}
-            else:
-                return {"success": False, "output": "", "error": "'safe_movebot_second' not defined", "status": 1}
+# Initialize ROS node
+if not rospy.core.is_initialized():
+    rospy.init_node('dynamic_code_executor', anonymous=True)
 
-        except Exception as e:
-            # Handle exceptions and format traceback
-            tb = traceback.extract_tb(e.__traceback__)
-            filtered_tb = ["Traceback (most recent call last):"]
-            for frame in tb:
-                if frame.filename == temp_filename:
-                    offending_line = linecache.getline(frame.filename, frame.lineno).strip()
-                    filtered_tb.append(f'  File "{frame.filename}", line {frame.lineno}, in {frame.name}')
-                    if offending_line:
-                        filtered_tb.append(f"    {offending_line}")
-            filtered_tb.append(f"{type(e).__name__}: {e}")
-            cleaned_tb = "\n".join(filtered_tb)
-            return {"success": False, "output": "", "error": cleaned_tb, "status": 1}
+# Add the directory of the current script to sys.path
+script_path = sys.argv[1]
+sys.path.insert(0, os.path.dirname(script_path))
 
-        finally:
-            # Clean up the temporary file
-            os.remove(temp_filename)
+# Load global variables from JSON
+with open('globals.json', 'r') as gf:
+    globals().update(json.load(gf))
+
+# Initialize ROS publishers
+velocity_pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
+# User-provided code starts here
+{body}
+""")
+
+        # Run the generated code using subprocess
+        result = subprocess.run(
+            ['python3', 'temp_code.py', current_file_path],
+            capture_output=True,
+            text=True
+        )
+
+        # Prepare the response
+        msg = {
+            "success": result.returncode == 0,
+            "output": result.stdout,
+            "error": result.stderr,
+            "status": result.returncode
+        }
+        return msg
+
+
 ###################################################
 ###################################################
 ###################################################
