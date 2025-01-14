@@ -470,36 +470,6 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
                     </block>
                 </value>
             </block>
-            <block type="scanner_data"></block>
-            <block type="scanner_data_range">
-                <value name="x_range">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="y_range">
-                    <block type="math_number">
-                        <field name="NUM">359</field>
-                    </block>
-                </value>
-            </block>
-            <block type="scanner_data_check">
-                <value name="x_range">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="y_range">
-                    <block type="math_number">
-                        <field name="NUM">359</field>
-                    </block>
-                </value>
-                <value name="distance">
-                    <block type="math_number">
-                        <field name="NUM">10</field>
-                    </block>
-                </value>
-            </block>
             <block type="sleep_bot">
                 <value name="second">
                     <block type="math_number">
@@ -508,81 +478,6 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
                 </value>
             </block>
             <block type="stop_bot"></block>
-        </category>
-        <category name="Map Navigation" colour="#FF8A65">
-            <block type="movebot_link">
-                <value name="meter">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="turnbot_link">
-                <value name="degree">
-                    <block type="math_number">
-                        <field name="NUM">90</field>
-                    </block>
-                </value>
-            </block>
-            <block type="initialization_pose"></block>
-            <block type="pose_change">
-                <value name="x_tar">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="y_tar">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="degree">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="start_position"></block>
-            <block type="movebot_location"></block>
-            <block type="movebot_position">
-                <value name="x_goal">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="y_goal">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-                <value name="degree">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="get_location"></block>
-            <block type="sleep_robot">
-                <value name="second">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="stopbot_map"></block>
-        </category>
-    </category>
-    <sep></sep>
-    <category name="Arduino" colour="#006064">
-        <category name="Communication" colour="#00838F">
-            <block type="raspy_arduino_write">
-                <value name="number">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="raspy_arduino_read"></block>
         </category>
     </category>
 </xml>

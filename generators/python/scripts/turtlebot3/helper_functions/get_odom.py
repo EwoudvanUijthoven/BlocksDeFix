@@ -5,5 +5,5 @@ def get_odom(tf_listener, odom_frame, base_frame):
         rospy.loginfo("TF Exception")
         return
 
-    return (geometry_msgs.Point(*trans))
+    return geometry_msgs.msg.Point(*trans)
 

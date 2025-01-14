@@ -1,9 +1,9 @@
 def turnbot_degree(clockwise, degreeAngle, speed):
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
 
     listener = tf.TransformListener()
 
-    if (clockwise == 0):
+    if clockwise == "Left":
         angular_tolerance = math.radians(2.5)
     else:
         angular_tolerance = math.radians(-2.5)
@@ -19,18 +19,18 @@ def turnbot_degree(clockwise, degreeAngle, speed):
 
     rate = rospy.Rate(20)
 
-    if speed == 'slow' and clockwise == 'left':
+    if speed == 'slow' and clockwise == 'Left':
         twist.angular.z = 0.25
-    elif speed == 'normal' and clockwise == 'left':
+    elif speed == 'normal' and clockwise == 'Left':
         twist.angular.z = 0.5
-    elif speed == 'fast' and clockwise == 'left':
+    elif speed == 'fast' and clockwise == 'Left':
         twist.angular.z = 0.75
 
-    if speed == 'slow' and clockwise == 'right':
+    if speed == 'slow' and clockwise == 'Right':
         twist.angular.z = -0.25
-    elif speed == 'normal' and clockwise == 'right':
+    elif speed == 'normal' and clockwise == 'Right':
         twist.angular.z = -0.5
-    elif speed == 'fast' and clockwise == 'right':
+    elif speed == 'fast' and clockwise == 'Right':
         twist.angular.z = -0.75
 
     odom_frame = "/odom"
@@ -45,6 +45,7 @@ def turnbot_degree(clockwise, degreeAngle, speed):
         except (tf.Exception, tf.ConnectivityException, tf.LookupException):
             rospy.loginfo("Cannot find transform between /odom and /base_link or /base_footprint")
             rospy.signal_shutdown("tf Exception")
+            return "no base_frame"
 
     rotation = get_odomRotate(listener, odom_frame, base_frame)
 
@@ -62,26 +63,19 @@ def turnbot_degree(clockwise, degreeAngle, speed):
         turn_angle += delta_angle
         last_angle = rotation
 
-        turn = abs(turn_angle + angular_tolerance)
-        goal = abs(goal_angle)
-
-        print("goal_angle: %s" % goal_angle)
-        print("rotate: %s" % rotation)
-        if (abs(turn_angle + angular_tolerance) > abs(goal_angle) - 0.25):
-            if (clockwise == 0):
+        if abs(turn_angle + angular_tolerance) > abs(goal_angle) - 0.25:
+            if clockwise == "Left":
                 twist.angular.z = 0.20
             else:
                 twist.angular.z = -0.20
-        print("turn: %s" % turn)
-        print("goal_angle: %s" % goal)
-        if (abs(turn_angle + angular_tolerance) > abs(goal_angle)):
-            print("Breaking!!!")
+        if abs(turn_angle + angular_tolerance) > abs(goal_angle):
+            print(f"Rotated {degreeAngle} degrees!")
             break
 
         velocity_pub.publish(twist)
         rate.sleep()
 
-    twist = geometry_msgs.Twist()
+    twist = geometry_msgs.msg.Twist()
     twist.angular.z = 0.00
     velocity_pub.publish(twist)
     rate.sleep()

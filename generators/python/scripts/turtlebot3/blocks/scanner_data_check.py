@@ -7,17 +7,17 @@ def scanner_data_check(x_range, y_range, distance):
 
     if x_range > y_range:
         for x in range(x_range, 359):
-            if str(ranges_scanner[x]) == "inf":
+            if str(ranges_scanner[x]) is None:
                 ranges_scanner[x] = 0
             ranges_scanner_help.append(ranges_scanner[x])
         for y in range(0, y_range):
-            if str(ranges_scanner[y]) == "inf":
+            if str(ranges_scanner[y]) is None:
                 ranges_scanner[y] = 0
             ranges_scanner_help.append(ranges_scanner[y])
 
     elif x_range < y_range:
         for x in range(x_range, y_range):
-            if str(ranges_scanner[x]) == "inf":
+            if str(ranges_scanner[x]) is None:
                 ranges_scanner[x] = 0
             ranges_scanner_help.append(ranges_scanner[x])
 
