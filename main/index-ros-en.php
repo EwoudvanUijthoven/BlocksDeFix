@@ -426,59 +426,57 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
     </category>
     <category name="Functions" custom="PROCEDURE" colour="#01579B"></category>
     <sep></sep>
-    <category name="Robot" colour="#BF360C">
-        <category name="Free Navigation" colour="#FF7043">
-            <block type="movebot_sec">
-                <value name="second">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="turnbot_sec">
-                <value name="second">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="safe_movebot_sec">
-                <value name="second">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="movebot_dis">
-                <value name="distance">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="turnbot_deg">
-                <value name="degree">
-                    <block type="math_number">
-                        <field name="NUM">90</field>
-                    </block>
-                </value>
-            </block>
-            <block type="safe_movebot_dis">
-                <value name="distance">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="sleep_bot">
-                <value name="second">
-                    <block type="math_number">
-                        <field name="NUM">0</field>
-                    </block>
-                </value>
-            </block>
-            <block type="stop_bot"></block>
-        </category>
+    <category name="Robot" colour="#FF7043">
+        <block type="movebot_sec">
+            <value name="second">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="turnbot_sec">
+            <value name="second">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="safe_movebot_sec">
+            <value name="second">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="movebot_dis">
+            <value name="distance">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="turnbot_deg">
+            <value name="degree">
+                <block type="math_number">
+                    <field name="NUM">90</field>
+                </block>
+            </value>
+        </block>
+        <block type="safe_movebot_dis">
+            <value name="distance">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="sleep_bot">
+            <value name="second">
+                <block type="math_number">
+                    <field name="NUM">0</field>
+                </block>
+            </value>
+        </block>
+        <block type="stop_bot"></block>
     </category>
 </xml>
 
