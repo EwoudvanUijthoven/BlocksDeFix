@@ -5,118 +5,122 @@
     <field name="type">String</field>
     <value name="name">
       <block type="inout_digital_read" id=")[I/j0Nn)pB,k$HJDMzD">
-        <field name="PIN">D3</field>
+        <field name="PIN">3</field>
       </block>
     </value>
     <next>
       <block type="define_variable" id="G*;ML:WRwf/=aJKP%4bJ">
         <field name="name">temperatuur_getal</field>
-        <field name="type">String</field>
+        <field name="type">int</field>
         <value name="name">
           <block type="inout_digital_read" id="COF!tHUGLfWQMC,B2$/]">
-            <field name="PIN">D3</field>
+            <field name="PIN">3</field>
           </block>
         </value>
         <next>
-          <block type="define_variable" id="l9I!.GIF3M#2a[-FckN4">
+          <block type="define_variable" id="z1`Vr56n}m`dDaCVFH`f">
             <field name="name">vertraging</field>
             <field name="type">int</field>
             <value name="name">
-              <block type="math_number" id="zq3^u1e6lx:eQbC9Mt)|">
-                <field name="NUM">0</field>
+              <block type="math_number" id="`BJO;0:yCUmb)c8YCqtY">
+                <field name="NUM">2</field>
               </block>
             </value>
             <next>
-              <block type="display_println" id="tRZ5sQ3?-%O,U]0hqcm$">
-                <value name="TEXT">
-                  <block type="use_variable" id="N-44~3|bef}6Du/TvE}Q">
-                    <field name="var_name">temperatuur_tekst</field>
+              <block type="controls_if" id="kE%K+8aDloL`ct6*,HxD">
+                <value name="IF0">
+                  <block type="logic_compare" id="v/#eh~K|^[OSu~[([rR:">
+                    <field name="OP">NEQ</field>
+                    <value name="A">
+                      <block type="text" id="cf.`=222-u!q*^In+,Uo">
+                        <field name="TEXT">temperatuur_tekst</field>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <block type="text" id="ZzrPEkKO$0H,TR=LvNT4">
+                        <field name="TEXT">0</field>
+                      </block>
+                    </value>
                   </block>
                 </value>
-                <next>
-                  <block type="controls_if" id="kE%K+8aDloL`ct6*,HxD">
-                    <value name="IF0">
-                      <block type="logic_compare" id="v/#eh~K|^[OSu~[([rR:">
-                        <field name="OP">NEQ</field>
+                <statement name="DO0">
+                  <block type="controls_repeat_ext" id="w1?|Ke~X==}IxzQd5^+1">
+                    <value name="TIMES">
+                      <block type="math_arithmetic" id="8rs+FDeRY.$q`s%s!e!/">
+                        <field name="OP">DIVIDE</field>
                         <value name="A">
-                          <block type="text" id="0K;^/i$h,Hy,u|N)IwTW">
-                            <field name="TEXT">temperatuur_tekst</field>
+                          <block type="math_number" id=",Ui8ke!l|^m6z%K@$q+r">
+                            <field name="NUM">15</field>
                           </block>
                         </value>
                         <value name="B">
-                          <block type="text" id="ZzrPEkKO$0H,TR=LvNT4">
-                            <field name="TEXT">0</field>
+                          <block type="math_number" id="_I$S73#k)!s`P4k2`QLk">
+                            <field name="NUM">0</field>
                           </block>
                         </value>
                       </block>
                     </value>
-                    <statement name="DO0">
-                      <block type="controls_repeat_ext" id="w1?|Ke~X==}IxzQd5^+1">
-                        <value name="TIMES">
-                          <block type="math_arithmetic" id="8rs+FDeRY.$q`s%s!e!/">
-                            <field name="OP">DIVIDE</field>
-                            <value name="A">
-                              <block type="math_number" id=",Ui8ke!l|^m6z%K@$q+r">
-                                <field name="NUM">15</field>
-                              </block>
-                            </value>
-                            <value name="B">
-                              <block type="use_variable" id="[=:0=nZ7o`[j)].#x]di">
-                                <field name="var_name">vertraging</field>
-                              </block>
-                            </value>
-                          </block>
-                        </value>
-                        <statement name="DO">
-                          <block type="inout_digital_write" id="hAvIZsA0sTBqOR(,PS#}">
-                            <field name="PIN">D6</field>
-                            <field name="STAT">HIGH</field>
-                            <next>
-                              <block type="base_delay" id="N!$:?.rI]m^d=[mq[6]Q">
-                                <value name="DELAY_TIME">
-                                  <block type="math_arithmetic" id="[.TJ@EX=);#B0x%}JaUs">
-                                    <field name="OP">MULTIPLY</field>
-                                    <value name="A">
-                                      <block type="use_variable" id="`2N86/;jN[cb-}:ss;|+">
-                                        <field name="var_name">vertraging</field>
-                                      </block>
-                                    </value>
-                                    <value name="B">
-                                      <block type="math_number" id="PDM|_9Ji.4)3CU/lU,G$">
-                                        <field name="NUM">1000</field>
-                                      </block>
-                                    </value>
+                    <statement name="DO">
+                      <block type="inout_digital_write" id="hAvIZsA0sTBqOR(,PS#}">
+                        <field name="PIN">6</field>
+                        <field name="STAT">HIGH</field>
+                        <next>
+                          <block type="base_delay" id="N!$:?.rI]m^d=[mq[6]Q">
+                            <value name="DELAY_TIME">
+                              <block type="math_arithmetic" id="[.TJ@EX=);#B0x%}JaUs">
+                                <field name="OP">MULTIPLY</field>
+                                <value name="A">
+                                  <block type="use_variable" id="`2N86/;jN[cb-}:ss;|+">
+                                    <field name="var_name">vertraging</field>
                                   </block>
                                 </value>
+                                <value name="B">
+                                  <block type="math_number" id="PDM|_9Ji.4)3CU/lU,G$">
+                                    <field name="NUM">1000</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="inout_digital_write" id="vpN]@z+(CvJ.tdo`KnEE">
+                                <field name="PIN">6</field>
+                                <field name="STAT">LOW</field>
                                 <next>
-                                  <block type="inout_digital_write" id="vpN]@z+(CvJ.tdo`KnEE">
-                                    <field name="PIN">D6</field>
-                                    <field name="STAT">LOW</field>
-                                    <next>
-                                      <block type="base_delay" id="#gkHE$eFqZP4roGX,(W5">
-                                        <value name="DELAY_TIME">
-                                          <block type="math_arithmetic" id="7-D_+9CC6NKrdZCe`#!6">
-                                            <field name="OP">MULTIPLY</field>
-                                            <value name="A">
-                                              <block type="use_variable" id="WJ#CY`z)`bh^rL}Rw%Ht">
-                                                <field name="var_name">vertraging</field>
-                                              </block>
-                                            </value>
-                                            <value name="B">
-                                              <block type="math_number" id="uzdjkD;~IpUZ`(gZi#4E">
-                                                <field name="NUM">1000</field>
-                                              </block>
-                                            </value>
+                                  <block type="base_delay" id="#gkHE$eFqZP4roGX,(W5">
+                                    <value name="DELAY_TIME">
+                                      <block type="math_arithmetic" id="7-D_+9CC6NKrdZCe`#!6">
+                                        <field name="OP">MULTIPLY</field>
+                                        <value name="A">
+                                          <block type="use_variable" id="WJ#CY`z)`bh^rL}Rw%Ht">
+                                            <field name="var_name">vertraging</field>
+                                          </block>
+                                        </value>
+                                        <value name="B">
+                                          <block type="math_number" id="uzdjkD;~IpUZ`(gZi#4E">
+                                            <field name="NUM">1000</field>
                                           </block>
                                         </value>
                                       </block>
-                                    </next>
+                                    </value>
                                   </block>
                                 </next>
                               </block>
                             </next>
                           </block>
-                        </statement>
+                        </next>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+                <next>
+                  <block type="controls_if" id="Pq~+RQ.S{YO^r;29NDt~">
+                    <statement name="DO0">
+                      <block type="base_delay" id="T`_8P_v9=cyId=9L@kos">
+                        <value name="DELAY_TIME">
+                          <block type="math_number" id="y9VJO:}r9W$AA:=bQ=`v">
+                            <field name="NUM">10000</field>
+                          </block>
+                        </value>
                       </block>
                     </statement>
                   </block>
