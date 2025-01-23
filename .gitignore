@@ -36,6 +36,7 @@ proguard/
 *.log
 
 globals.json
+poser.json
 
 # All files in Logs
 main/logs/
