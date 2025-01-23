@@ -682,7 +682,7 @@ function remoteSaveXML(code, name) {
 function startTask(task_nr) {
     taskFlag = task_nr;
     if (task_nr === 3) {
-        startTimer(600);
+        startTimer(420);
         loadXML_from_files("tasks_xml/Task3Arduino.xml");
     } else {
         alert("Task number not found!");
@@ -722,11 +722,11 @@ function startTimer(time_limit) {
     clearInterval(intervalId); // Clear any existing timer
     intervalId = setInterval(function() {
         elapsedTime++;
-        let time_left = time_limit - elapsedTime;
         if (elapsedTime >= time_limit) {
-            alert("Time is up!");
+            alert("Je tijd is op, laat de onderzoeker weten dat je klaar bent!");
             stopTimer();
             endTask();
+            elapsedTime = 0;
         }
     }, 1000);
 }
