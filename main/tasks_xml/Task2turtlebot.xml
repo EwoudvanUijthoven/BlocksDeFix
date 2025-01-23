@@ -5,6 +5,7 @@
     <variable type="" id="m^LpF!hDC)PhZ$)0pTyy">afstand</variable>
     <variable type="" id="y%(U-g0?%uPU=z!=^OWF">x</variable>
     <variable type="" id="?RJ?GJlRRXio7,A|.#~F">huisnummer</variable>
+    <variable type="" id="qMqPCdG++p%w1lmFzK8E">afstand_lijst</variable>
   </variables>
   <block type="procedures_defnoreturn" id="HVN]/w}kZR^xQT`=FVs2" x="96" y="116">
     <mutation>
@@ -24,11 +25,11 @@
             <field name="WHERE">FROM_START</field>
             <value name="VALUE">
               <block type="variables_get" id="w6r6{KlFV*XO/_LpF-0*">
-                <field name="VAR" id="i%t{^/8:DA+[VXq4uM=u" variabletype="">list</field>
+                <field name="VAR" id="@ig18[wue+2,hUi]Gv8M" variabletype="">afstanden</field>
               </block>
             </value>
             <value name="AT">
-              <block type="variables_get" id="Jg@7CohX+mnb06|`v?FC">
+              <block type="variables_get" id="uJf{CU?D,D40NRes|b;m">
                 <field name="VAR" id="?RJ?GJlRRXio7,A|.#~F" variabletype="">huisnummer</field>
               </block>
             </value>
@@ -78,10 +79,10 @@
                               </block>
                             </value>
                             <next>
-                              <block type="movebot_sec" id="X$tT%rI5p)--tG_Szw?/">
+                              <block type="movebot_dis" id=")~1e]P(TL#Us%T9NFd!|">
                                 <field name="direction">'Forward'</field>
-                                <field name="speed">'fast'</field>
-                                <value name="second">
+                                <field name="speed">'slow'</field>
+                                <value name="distance">
                                   <block type="variables_get" id="b7K$Ok%y/BD#V[);v4X7">
                                     <field name="VAR" id="m^LpF!hDC)PhZ$)0pTyy" variabletype="">afstand</field>
                                   </block>
@@ -110,34 +111,34 @@
       </block>
     </statement>
   </block>
-  <block type="variables_set" id="jk^[WPORwS/M,?JfVu$." x="94" y="505">
-    <field name="VAR" id="@ig18[wue+2,hUi]Gv8M" variabletype="">afstanden</field>
+  <block type="variables_set" id="jk^[WPORwS/M,?JfVu$." x="94" y="485">
+    <field name="VAR" id="qMqPCdG++p%w1lmFzK8E" variabletype="">afstand_lijst</field>
     <value name="VALUE">
       <block type="lists_create_with" id="ldOOHxm4J=r+1jf~(}T[">
         <mutation items="5"></mutation>
         <value name="ADD0">
           <block type="math_number" id="pkiOIPTdvgmQ%E@`gpp-">
-            <field name="NUM">0.2</field>
+            <field name="NUM">0.1</field>
           </block>
         </value>
         <value name="ADD1">
           <block type="math_number" id="}ak7gjTrJ9DoY|}/EqW;">
-            <field name="NUM">0.4</field>
+            <field name="NUM">0.2</field>
           </block>
         </value>
         <value name="ADD2">
           <block type="math_number" id="wgSGae{W5Tci7_$vBy#w">
-            <field name="NUM">0.6</field>
+            <field name="NUM">0.3</field>
           </block>
         </value>
         <value name="ADD3">
           <block type="math_number" id="@F!T`M`]-OTD~jJ,m?,3">
-            <field name="NUM">0.8</field>
+            <field name="NUM">0.4</field>
           </block>
         </value>
         <value name="ADD4">
           <block type="math_number" id="j91a{HvFHA`e$VMfEemV">
-            <field name="NUM">1</field>
+            <field name="NUM">0.5</field>
           </block>
         </value>
       </block>
@@ -150,18 +151,18 @@
           <arg name="afstanden"></arg>
         </mutation>
         <value name="ARG0">
-          <block type="math_number" id="%i;q?~@1}0g*I-DZV6Z[">
+          <block type="math_number" id="2+HsLUgz_mgaRbGGbWpg">
             <field name="NUM">6</field>
           </block>
         </value>
         <value name="ARG1">
-          <block type="math_number" id="2+HsLUgz_mgaRbGGbWpg">
+          <block type="math_number" id=":Jv`:LY3+#myZE(`G1G(">
             <field name="NUM">5</field>
           </block>
         </value>
         <value name="ARG2">
           <block type="variables_get" id="pF{7Q.,%*o9.u8Z1+|E8">
-            <field name="VAR" id="@ig18[wue+2,hUi]Gv8M" variabletype="">afstanden</field>
+            <field name="VAR" id="qMqPCdG++p%w1lmFzK8E" variabletype="">afstand_lijst</field>
           </block>
         </value>
         <next>

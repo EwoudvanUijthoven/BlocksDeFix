@@ -50,12 +50,10 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
             <h1 style="float:left; display:inline;">
                 <img src="../media/beesm.png" alt="Smiley face" height="42" width="100">
             </h1>
-            <div id="timer_display" style="float:right; visibility:hidden;">600</div>
         </div>
         <div id="rightHeader">
             <button class="btn_task" id="Task1" onclick="startTask(1)" style="float:left;">Start Task 1</button>
             <button class="btn_task" id="Task2" onclick="startTask(2)" style="float:left;">Start Task 2</button>
-            <button class="btn_task" id="Task3" onclick="startTask(3)" style="float:left;">Start Task 3</button>
             <button class="btn_task" id="TaskEnd" onclick="endTask()" style="float:left;">End Task</button>
             <!----------->
             <button class="btn_tabs" id="tb3" onclick="#" style="float:right;" disabled>TurtleBot 3</button>

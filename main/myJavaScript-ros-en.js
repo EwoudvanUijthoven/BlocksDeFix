@@ -517,6 +517,7 @@ function runCode() {
 //--------------------------------
 //this function is to post and call the evel.php & show the output
 function remoteEval(code) {
+    var display_hints = true;
     var url = "http://127.0.0.1:8099/run_generated_code";
     var hint_url = "http://127.0.0.1:5000/get_debugging_hint";
     var method = "POST";
@@ -550,9 +551,9 @@ function remoteEval(code) {
                     });
                     hint_request.onreadystatechange = function() {
                         if (hint_request.readyState === 4) {
-                            if (hint_request.status === 200) {
+                            if (hint_request.status === 200 && display_hints) {
                                 var hint_response = JSON.parse(hint_request.responseText);
-                                output.innerHTML = str_status + "\n" + str_output + "\n"  + hint_response.hint_text;
+                                output.innerHTML = str_status + "\n" + str_output + "\n" + hint_response.hint_text;
                             }
                             else {
                                 output.innerHTML = str_status + "\n" + str_output + "\n" + str_error;
@@ -579,7 +580,7 @@ function remoteEval(code) {
                     });
                     hint_request.onreadystatechange = function() {
                         if (hint_request.readyState === 4) {
-                            if (hint_request.status === 200) {
+                            if (hint_request.status === 200  && display_hints) {
                                 var hint_response = JSON.parse(hint_request.responseText);
                                 output.innerHTML = str_status + "\n" + str_output + "\n" + hint_response.hint_text;
                             }
@@ -626,13 +627,10 @@ function startTask(task_nr) {
     taskFlag = task_nr;
     if (task_nr === 1) {
         startTimer(600);
-        loadXML_from_files("tasks_xml/task1.xml");
+        loadXML_from_files("tasks_xml/Task1turtlebot.xml");
     } else if (task_nr === 2) {
         startTimer(600);
-        loadXML_from_files("tasks_xml/task2.xml");
-    } else if (task_nr === 3) {
-        startTimer(600);
-        loadXML_from_files("tasks_xml/task3.xml");
+        loadXML_from_files("tasks_xml/Task2turtlebot.xml");
     } else {
         alert("Task number not found!");
         throw new Error("Task number not found!");
@@ -652,6 +650,7 @@ function endTask() {
     stopTimer();
     let log_text = "Task " + taskFlag.toString() + "," + elapsedTime.toString() + "," + run_code_clicks.toString();
     logToFile(log_text)
+    saveTaskXML()
     console.log("End task:", taskFlag);
     taskFlag = undefined;
 }
@@ -668,14 +667,13 @@ var elapsedTime = 0;
  */
 function startTimer(time_limit) {
     clearInterval(intervalId); // Clear any existing timer
-    document.getElementById('timer_display').style.visibility = 'visible';
     intervalId = setInterval(function() {
         elapsedTime++;
         let time_left = time_limit - elapsedTime;
-        document.getElementById('timer_display').innerHTML = time_left.toString();
         if (elapsedTime >= time_limit) {
             alert("Time is up!");
             stopTimer();
+            endTask();
         }
     }, 1000);
 }
@@ -686,7 +684,6 @@ function startTimer(time_limit) {
  */
 function stopTimer() {
     clearInterval(intervalId);
-    document.getElementById('timer_display').style.visibility = 'hidden';
 }
 
 /**
@@ -698,7 +695,39 @@ function stopTimer() {
 function logToFile(log) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "logFile.php?task="+taskFlag, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                console.log("Log saved successfully.");
+            } else {
+                console.error("Error saving log: " + xhr.status + " - " + xhr.responseText);
+            }
+        }
+    };
     xhr.send(log);
+}
+
+function saveTaskXML() {
+    var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
+    $('#xmlCode').val(xmlText).focus();
+
+    var xml_text = document.getElementById("xmlCode").value;
+    var xml_textAsBlob = new Blob([xml_text], {
+        type: 'text/plain'
+    });
+	remoteSaveTaskXML(xml_textAsBlob);
+}
+
+function remoteSaveTaskXML(code) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "saveXml.php?task="+taskFlag, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+           // alert("document saved");
+        }
+    }
+    xhr.send(code);
 }
 
 /**

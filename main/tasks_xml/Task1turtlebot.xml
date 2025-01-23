@@ -3,12 +3,13 @@
     <variable type="" id="U}]6`p~H^i-]wj%[}4^-">wachttijd</variable>
     <variable type="" id="Ik`P39JX/sy}:0;9Tn{x">ontvanger</variable>
     <variable type="" id="F$Iu*:9.7tYaE0t.a1}m">ontvanger_naam</variable>
+    <variable type="" id="|B@UH_=I7}n!Y2@+a70H">text</variable>
   </variables>
   <block type="variables_set" id="P+QKLfVo3tx7^|Hg+(!q" x="160" y="103">
     <field name="VAR" id="U}]6`p~H^i-]wj%[}4^-" variabletype="">wachttijd</field>
     <value name="VALUE">
-      <block type="text" id="1m7}]]wD~|E:szyF``*8">
-        <field name="TEXT">5</field>
+      <block type="text" id="MZzxIG.9ai[-0!s.8Kc4">
+        <field name="TEXT">4</field>
       </block>
     </value>
     <next>
@@ -52,23 +53,23 @@
                 <field name="speed">'slow'</field>
                 <value name="distance">
                   <block type="math_number" id="0$g=fZY0/.f6{|)_Z#c_">
-                    <field name="NUM">1</field>
+                    <field name="NUM">0.2</field>
                   </block>
                 </value>
                 <next>
                   <block type="sleep_bot" id="Mf}LS;[PiXx!gbL+.qwH">
                     <value name="second">
-                      <block type="math_number" id="|2J9!=W?T*Im3R13y]^:">
-                        <field name="NUM">3</field>
+                      <block type="variables_get" id="BC?l+/RCqRP9]Th(17EY">
+                        <field name="VAR" id="U}]6`p~H^i-]wj%[}4^-" variabletype="">wachttijd</field>
                       </block>
                     </value>
                     <next>
                       <block type="movebot_sec" id="n`e~Cr*ulLU$p%trfr,7">
                         <field name="direction">'Backward'</field>
-                        <field name="speed">'normal'</field>
+                        <field name="speed">'slow'</field>
                         <value name="second">
                           <block type="math_number" id="4_J?%X,r-74vA1@.Jfdi">
-                            <field name="NUM">4</field>
+                            <field name="NUM">2</field>
                           </block>
                         </value>
                         <next>
@@ -83,31 +84,21 @@
                             <next>
                               <block type="movebot_sec" id="6aR+78k;Yslfq3;_[4o?">
                                 <field name="direction">'Forward'</field>
-                                <field name="speed">'fast'</field>
+                                <field name="speed">'slow'</field>
                                 <value name="second">
                                   <block type="math_number" id="99{9,u3b1so~k9/Uqn1+">
-                                    <field name="NUM">3</field>
+                                    <field name="NUM">2</field>
                                   </block>
                                 </value>
                                 <next>
                                   <block type="sleep_bot" id="N8}bO$aWNY%Wx4s+)d3@">
                                     <value name="second">
-                                      <block type="math_number" id="@/zV{#l#e.!z}u?vkB)$">
-                                        <field name="NUM">3</field>
+                                      <block type="variables_get" id="eIS/CImI5rGRaR|;slyU">
+                                        <field name="VAR" id="U}]6`p~H^i-]wj%[}4^-" variabletype="">wachttijd</field>
                                       </block>
                                     </value>
                                     <next>
                                       <block type="controls_if" id="c^[cpQSMzT`VF*ok/z7|">
-                                        <value name="IF0">
-                                          <block type="logic_compare" id="z{eCRW_$K#otmH=!qI=C">
-                                            <field name="OP">EQ</field>
-                                            <value name="A">
-                                              <block type="variables_get" id="D^Q1|mH=/X`Kn--fz#^_">
-                                                <field name="VAR" id="Ik`P39JX/sy}:0;9Tn{x" variabletype="">ontvanger</field>
-                                              </block>
-                                            </value>
-                                          </block>
-                                        </value>
                                         <statement name="DO0">
                                           <block type="text_print" id="_$?3f:C?6|A5Wn2}HlAz">
                                             <value name="TEXT">
@@ -118,8 +109,13 @@
                                             <next>
                                               <block type="text_print" id="-i/{4.0@i@ZQnA|T25d0">
                                                 <value name="TEXT">
-                                                  <block type="variables_get" id="MpMG!{+lelPm=#Lhm7o0">
-                                                    <field name="VAR" id="F$Iu*:9.7tYaE0t.a1}m" variabletype="">ontvanger_naam</field>
+                                                  <block type="text_changeCase" id="*p%OpiPVofcECS`apFAS">
+                                                    <field name="CASE">UPPERCASE</field>
+                                                    <value name="TEXT">
+                                                      <block type="variables_get" id="+OWysk_XKmKPO`6Va]Ee">
+                                                        <field name="VAR" id="F$Iu*:9.7tYaE0t.a1}m" variabletype="">ontvanger_naam</field>
+                                                      </block>
+                                                    </value>
                                                   </block>
                                                 </value>
                                               </block>

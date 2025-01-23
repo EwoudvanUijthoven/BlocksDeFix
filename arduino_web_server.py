@@ -24,7 +24,8 @@ import urllib3
 ###################################################
 logging.basicConfig(level=logging.DEBUG)
 # arduino_cmd = '"C:/Program Files/Arduino IDE/Arduino IDE"'
-arduino_cmd = '"C:/Program Files (x86)/Arduino/arduino"'
+# arduino_cmd = '"C:/Program Files (x86)/Arduino/arduino"'
+arduino_cmd = '~/arduino-1.8.5/arduino'
 ###################################################
 ###################################################
 #shoutdown the server
@@ -112,7 +113,7 @@ def guess_port_name():
             for i in portList:
                 print("Port Name:"+i)
                 portname = i
-
+    portname = "/dev/ttyACM0"
     logging.info("Guessing port name as %s", portname)
     return portname
 
@@ -329,6 +330,7 @@ class ArduHandler(object): #SimpleHTTPServer.SimpleHTTPRequestHandler
         output = uploadAndCompile(self, text)
         cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
 
+        return output
         return output
 
 if __name__ == '__main__':
