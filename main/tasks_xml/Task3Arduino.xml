@@ -114,11 +114,21 @@
                 </statement>
                 <next>
                   <block type="controls_if" id="Pq~+RQ.S{YO^r;29NDt~">
+                    <mutation else="1"></mutation>
                     <statement name="DO0">
                       <block type="base_delay" id="T`_8P_v9=cyId=9L@kos">
                         <value name="DELAY_TIME">
                           <block type="math_number" id="y9VJO:}r9W$AA:=bQ=`v">
                             <field name="NUM">10000</field>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+                    <statement name="ELSE">
+                      <block type="base_delay" id="OE0Bd1AMaiBLCaqh*5(V">
+                        <value name="DELAY_TIME">
+                          <block type="math_number" id="[+Y-$O9QE|:V4)kPZChA">
+                            <field name="NUM">5000</field>
                           </block>
                         </value>
                       </block>
