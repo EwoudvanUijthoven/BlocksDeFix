@@ -48,7 +48,7 @@ $pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_C
     <div id="header">
         <div id="leftHeader" style="margin-right:15px">
             <h1 style="float:left; display:inline;">
-                <img src="../media/beesm.png" alt="Smiley face" height="42" width="100">
+                <b>BlocksDeFix</b>
             </h1>
         </div>
         <div id="rightHeader">
